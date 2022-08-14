@@ -1,0 +1,29 @@
+/* Global */
+body {
+	background-color: #000;
+	color: lightgray;
+	font-family: "Microsoft YaHei UI", sans-serif, system-ui;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+	color: #fff;
+}
+h1 {
+	margin-top: 0px;
+}
+
+/* Links */
+a {
+	color: #0ff;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+a:active {
+	color: #fff;
+}
+a:visited {
+	color: #f0f;
+}
