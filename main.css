@@ -1,8 +1,8 @@
 /* Global */
-body {
-	background-color: #000;
+:root {
+	color-scheme: dark;
 	color: lightgray;
-	font-family: "Microsoft YaHei UI", sans-serif, system-ui;
+	font-family: "Verdana", sans-serif, system-ui;
 }
 
 /* Headings */
@@ -26,4 +26,12 @@ a:active {
 }
 a:visited {
 	color: #f0f;
+}
+
+/* Other */
+hr {
+	border-top: none;
+	border-right: none;
+	border-bottom: 1px solid lightgray;
+	border-left: none;
 }
