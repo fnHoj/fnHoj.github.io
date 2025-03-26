@@ -41,16 +41,13 @@
 
         var mx = 0, my = 0;
         var hold = false;
+        var touchid = null;
 
         var l = 128;
         var ds = 8;
         var cx = W * 0.125, cy = H * 0.75;
         var dx = 0, dy = 0;
         var hx = 0, hy = 1;
-
-        function clamp(x, l = 0, r = 1) {
-            return x <= l ? l : x >= r ? r : x;
-        }
 
         function draw() {
             ctx.fillStyle = "#00000002";
@@ -94,9 +91,8 @@
             if (s < ds)
                 return;
             dx /= s; dy /= s;
+            cx += ds * dx; cy += ds * dy;
             hind_wheel(dx, dy);
-            cx = clamp(cx + ds * dx, 0, W);
-            cy = clamp(cy + ds * dy, 0, H);
             draw();
         }
         function frame() {
@@ -108,16 +104,36 @@
         canvas.height = H;
         ctx.fillRect(0, 0, W, H);
 
-        container.addEventListener("mousemove", (e)=>{
+        function moveCursor(e) {
             mx = W * (e.clientX - canvas.offsetLeft) / canvas.clientWidth;
             my = H * (e.clientY - canvas.offsetTop) / canvas.clientHeight;
-        });
-        container.addEventListener("mousedown", (e)=>{
+        }
+
+        addEventListener("mousemove", moveCursor);
+        addEventListener("mousedown", (e)=>{hold = true; moveCursor(e);});
+        addEventListener("mouseup", ()=>{hold = false;});
+
+        addEventListener("touchstart", (e)=>{
+            if (touchid)
+                return;
             hold = true;
-            mx = W * (e.clientX - canvas.offsetLeft) / canvas.clientWidth;
-            my = H * (e.clientY - canvas.offsetTop) / canvas.clientHeight;
+            touchid = e.touches[0].identifier;
+            moveCursor(e.touches[0]);
         });
-        container.addEventListener("mouseup", ()=>{hold = false;});
+        addEventListener("touchmove", (e)=>{
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier == touchid)
+                    moveCursor(e.changedTouches[i]);
+            }
+        });
+        addEventListener("touchend", (e)=>{
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier == touchid) {
+                    hold = false;
+                    touchid = null;
+                }
+            }
+        });
 
         draw();
         frame();
