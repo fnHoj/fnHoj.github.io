@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+	<defs>
+		<style>
+			:root {
+				color-scheme: dark;
+				color: #00b;
+			}
+		</style>
+		<mask id="circ">
+			<circle r="1" style="fill: #fff;"/>
+		</mask>
+	</defs>
+	<g mask="url(#circ)">
+		<rect x="-1" y="-1" width="2" height="2" style="fill: currentColor; opacity: 0.2;"/>
+	</g>
+</svg>

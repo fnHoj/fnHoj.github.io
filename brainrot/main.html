@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <style>
+            @media screen and (width >= 1000px) {
+                #main {
+                    display: flex;
+                    flex-direction: row-reverse;
+                }
+                #docs {
+                    flex: 4 0 0;
+                }
+                #graphs {
+                    flex: 6 0 0;
+                    height: 100vh;
+                }
+                #graphs iframe {
+                    height: min(100%, 720px);
+                }
+            }
+            @media screen and (width < 1000px) {
+                #graphs {
+                    height: 320px;
+                    background-color: white;
+                }
+                #graphs iframe {
+                    height: 100%;
+                }
+            }
+            iframe {
+                border: none;
+                display: block;
+                width: 100%;
+            }
+            #graphs {
+                position: sticky;
+                top: 0;
+                overflow-x: hidden;
+            }
+            #graphs iframe {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                left: 40px;
+                width: calc(100% - 80px);
+                transition: left 0.5s ease;
+            }
+            #graphs iframe.hidden {
+                left: calc(100% + 20px);
+            }
+        </style>
+    </head>
+    <body>
+        <p>我觉得</p>
+        <p>现在咱</p>
+        <p>有必要</p>
+        <p>测试下</p>
+        <p>我如果</p>
+        <p>滚动到</p>
+        <p>它前面</p>
+        <p>会怎样</p>
+        <div id="main">
+            <div id="graphs">
+                <iframe src="1.html" class="disp" id="graph1"></iframe>
+                <iframe src="blocks/" class="disp hidden" id="graph2"></iframe>
+            </div>
+            <div id="docs">
+                <iframe src="doc1.html" class="left_panel" id="doc1"></iframe>
+                <iframe src="doc2.html" class="left_panel" id="doc2"></iframe>
+            </div>
+        </div>
+        <p>我觉得</p>
+        <p>现在咱</p>
+        <p>有必要</p>
+        <p>测试下</p>
+        <p>我如果</p>
+        <p>滚动到</p>
+        <p>它后面</p>
+        <p>会怎样</p>
+        
+        <script>
+            const /** @type {(HTMLIFrameElement | null)[]} */ docs = new Array(3).fill(0).map((_, i) => {
+                return !i? null: document.getElementById(`doc${i}`);
+            });
+            function fixHeight(/** @type {HTMLIFrameElement} */ d) {
+                d.style.height = d.contentWindow.document.documentElement.offsetHeight + 'px';
+            }
+            function fixAll() {
+                docs.forEach((d) => d && fixHeight(d));
+            }
+            const /** @type {(HTMLIFrameElement | null)[]} */ graphs = new Array(3).fill(0).map((_, i) => {
+                return !i? null: document.getElementById(`graph${i}`);
+            });
+            
+            // 这部分嘛……继续加油吧你
+            let sec = 1, hs = [0, 2100, 2100];
+            document.addEventListener(`scroll`, (e) => {
+                let new_sec = 1 + (window.scrollY > 2000);
+                if(sec !== new_sec){
+                    graphs[sec].classList.add('hidden');
+                    graphs[new_sec].classList.remove('hidden');
+                    sec = new_sec;
+                }
+                graphs[new_sec].contentWindow.postMessage({
+                    prog: (window.scrollY - hs.slice(0, sec).reduce((x, y) => x + y)) / hs[sec]
+                });
+            });
+            addEventListener("resize", fixAll);
+            docs.forEach((d) => {
+                if (!d)
+                    return;
+                if (d.contentWindow.document.readyState === "interactive")
+                    fixHeight(d);
+                else
+                    d.contentWindow.addEventListener("load", () => fixHeight(d));
+            });
+        </script>
+    </body>
+</html>

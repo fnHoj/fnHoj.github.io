@@ -1,0 +1,120 @@
+:root {
+	color-scheme: dark;
+	touch-action: none;
+	user-select: none;
+	font-size: 32px;
+}
+h1, p {
+	margin: 0;
+}
+body {
+	display: flex;
+	margin: 0;
+	position: absolute;
+	inset: 0;
+}
+#game {
+	position: relative;
+	inset: 0;
+	overflow: hidden;
+	flex: 7 0 0;
+}
+#sidebar {
+	flex: 3 0 0;
+}
+#turbine {
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	overflow: hidden;
+	position: absolute;
+	inset: 0;
+	margin: auto;
+	transform-origin: center;
+}
+#paddle {
+	position: absolute;
+	top: -1px;
+	left: 26px;
+	right: 26px;
+	height: 33px;
+	background-color: #fff;
+}
+#notes {
+	position: absolute;
+	inset: 50%;
+	width: 0;
+	height: 0;
+	outline: 2px solid #fff;
+}
+.note {
+	box-sizing: border-box;
+	overflow: hidden;
+	border-radius: 50%;
+	width: calc(2 * var(--r));
+	height: calc(2 * var(--r));
+	position: absolute;
+	transform-origin: center;
+}
+#scores {
+	width: 100%;
+	height: 0;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-top: auto;
+	margin-bottom: auto;
+	font-size: 200%;
+	text-align: center;
+	font-weight: 100;
+}
+#combo {
+	width: 100%;
+	position: absolute;
+	bottom: 240px;
+}
+#combo.broken {
+	color: #444;
+}
+#date {
+	width: 100%;
+	position: absolute;
+	bottom: 220px;
+	font-size: 40%;
+	color: #aaa;
+}
+#total {
+	width: 100%;
+	position: absolute;
+	top: 220px;
+	font-size: 40%;
+	color: #59d;
+}
+#judgement {
+	width: 100%;
+	position: absolute;
+	top: 240px;
+	font-weight: bold;
+	color: #9cf;
+}
+#judgement p {
+	width: 100%;
+	position: absolute;
+}
+#judgement p.miss {
+	color: #a00;
+}
+#overlay > div {
+	position: absolute;
+	inset: 0;
+	display: none;
+	flex-direction: column;
+	text-align: center;
+	background-color: #0006;
+	justify-content: center;
+}
+@media (orientation: portrait) {
+	#landscape {
+		display: flex !important;
+	}
+}
