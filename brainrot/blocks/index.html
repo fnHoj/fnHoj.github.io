@@ -70,7 +70,7 @@
 			const cnt_extremes = new Array(num_segs).fill(0);
 			const data = await fetch(path).then((res) => res.text()).then((s) => s.split(/\r\n/));
 			extremes.clear();
-			blocks = data.filter((s) => /^\d{4}-\d\d-\d\dT\d\d:\d\d(?:Z|[+-]\d{4})(?:,\d+(?:\.\d+)?){2}$/).map((s, i) => {
+			blocks = data.map((s, i) => {
 				const d = s.split(",");
 				const date = new Date(d[0]);
 				const mo = date.getFullYear() * 12 + date.getMonth();
@@ -80,7 +80,7 @@
 				if (typeof annual_extreme === "undefined" || annual_extreme.spd < spd)
 					extremes.set(mo, block);
 				return block;
-			});
+			}).filter((block) => Number.isFinite(block.d.getTime()) && Number.isFinite(block.spd) && Number.isFinite(block.deg));
 			for (const block of blocks) {	
 				if (max_freq < ++cnt[block.seg])
 					max_freq = cnt[block.seg];
