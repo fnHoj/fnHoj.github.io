@@ -68,7 +68,7 @@
 		async function init(path = "../wind.csv") {
 			const cnt = new Array(num_segs).fill(0);
 			const cnt_extremes = new Array(num_segs).fill(0);
-			const data = await fetch(path).then((res) => res.text()).then((s) => s.split(/\r\n/).slice(1));
+			const data = await fetch(path).then((res) => res.text()).then((s) => s.split(/\r\n/));
 			extremes.clear();
 			blocks = data.map((s, i) => {
 				const d = s.split(",");
@@ -80,7 +80,7 @@
 				if (typeof annual_extreme === "undefined" || annual_extreme.spd < spd)
 					extremes.set(mo, block);
 				return block;
-			});
+			}).filter((block) => Number.isFinite(block.d.getTime()) && Number.isFinite(block.spd) && Number.isFinite(block.deg));
 			for (const block of blocks) {	
 				if (max_freq < ++cnt[block.seg])
 					max_freq = cnt[block.seg];
@@ -168,7 +168,7 @@
 			}
 			if (t >= blocks.length) {
 				const tagx = Math.floor(mapx(mu / max_spd));
-				const tagy = Math.floor(mapy(0.5 / Math.E / beta / seg_density * extremes.size / max_extremes_freq))
+				const tagy = Math.floor(mapy(0.5 / Math.E / beta / seg_density * extremes.size / max_extremes_freq));
 				ctx.strokeStyle = "#b00";
 				ctx.lineWidth = 4;
 				ctx.beginPath();
