@@ -118,7 +118,8 @@
 			const t = prog * blocks.length;
 			const cnt = new Array(num_segs).fill(0);
 			const cnt_extremes = new Array(num_segs).fill(0);
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = "#fff";
+			ctx.fill(0, 0, canvas.width, canvas.height);
 			ctx.font = "24px sans-serif";
 			ctx.fillStyle = "#04c";
 			ctx.fillRect(29, canvas.height - 32, canvas.width - 29, 2);
