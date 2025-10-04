@@ -45,37 +45,30 @@
             font-size: 200%;
             line-height: 1em;
         }
-        .dynamic {
-            position: relative;
-            inset: 0;
-            overflow: hidden;
-        }
         .dynamic .afloat {
-            height: 0;
-            position: absolute;
+            block-size: var(--vis-height);
+            inline-size: 80%;
+            position: sticky;
+            inset-block-start: calc(50vh - var(--vis-height) / 2);
             z-index: -1;
-            margin-inline-end: 20%;
-            inset-inline: 0;
-            overflow: visible;
         }
         iframe {
-            width: 100%;
-            height: var(--vis-height);
-            position: relative;
-            inset-block-end: calc(var(--vis-height) / 2);
             border: none;
         }
-        .dynamic .content {
+        .content {
             margin-inline-start: auto;
             width: 80%;
             inset-inline: 0;
         }
-        .dynamic .content > div {
-            margin-block: calc(1.1 * var(--vis-height));
+        .content > div {
+            margin-block-start: calc(0.05 * var(--vis-height));
             background-color: #238;
             padding-block: 0.5em;
             padding-inline: 2em;
             border-radius: 0.5em;
+        }
+        .content > div:not(:last-of-type) {
+            margin-block-end: calc(1.1 * var(--vis-height));
         }
         img {
             width: 100%;
@@ -91,9 +84,7 @@
         <p>因此，对风能的<strong><strong>量化建模</strong></strong>和<strong><strong>精准评估</strong></strong>是可再生能源可靠利用的基础，对可持续能源方案至关重要。</p>
         <h2>风能评估</h2>
         <div class="dynamic">
-            <div id="boxchart" class="afloat">
-                <iframe id="chartiframe" src="blocks/"></iframe>
-            </div>
+            <iframe id="chartiframe" class="afloat" src="blocks/"></iframe>
             <div class="content">
                 <div id="prog0">
                     <p>我们将分析过往 20 年风速风向数据。</p>
@@ -115,14 +106,17 @@
                     <p>求解出两参数的值后，可按照公式（需要具体讲嘛？？）计算出 50 年一遇极端风速 32 m/s。</p>
                     <p>这已经弱于风机承受水平的最低标准。</p>
                 </div>
-                <div>
-                    <p>此外，从风向玫瑰图可看出：受地形影响，玉门风电站盛行东西风向。这对风机建设是有利条件：</p>
-                    <img src="rose.svg"/>
-                    <ul>
-                        <li>风向稳定，更易预测；</li>
-                        <li>风机无需频繁转向，可减少磨损，严长寿命。</li>
-                    </ul>
-                </div>
+                <span style="display: block; block-size: calc(1.05 * var(--vis-height));"></span>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <p>此外，从风向玫瑰图可看出：受地形影响，玉门风电站盛行东西风向。这对风机建设是有利条件：</p>
+                <img src="rose.svg"/>
+                <ul>
+                    <li>风向稳定，更易预测；</li>
+                    <li>风机无需频繁转向，可减少磨损，严长寿命。</li>
+                </ul>
             </div>
         </div>
         <h2>总结</h2>
@@ -135,14 +129,14 @@
         const prog0 = document.getElementById("prog0");
         const prog1 = document.getElementById("prog1");
         const chartiframe = document.getElementById("chartiframe");
+        const dynamic = document.getElementsByClassName("dynamic")[0];
 
         function calcProg(x, l, r) {
             return (x - l) / (r - l);
         }
 
         function setCenterPos(/** @type {number} */center) {
-            boxchart.style.top = `${center - boxchart.parentElement.offsetTop}px`;
-            chartiframe.contentWindow.postMessage({prog: calcProg(center - boxchart.parentElement.offsetTop, prog0.offsetTop, prog1.offsetTop)});
+            chartiframe.contentWindow.postMessage({prog: calcProg(center - dynamic.offsetTop, prog0.offsetTop, prog1.offsetTop)});
         }
 
         addEventListener("message", (e) => {
