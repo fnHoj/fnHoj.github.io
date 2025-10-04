@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>核心技术：能耗的微观解剖与PUE的飞跃</title>
+    <title>数字世界的能源图景：探寻计算的巨大能耗</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -11,51 +11,133 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
-    <!-- 第二部分：能耗的微观解剖与PUE -->
+    <!-- 滚动进度指示器 -->
+    <div id="progressBar"></div>
+    
+    <!-- 固定的可视化内容区域 -->
+    <div class="fixed-visualization-container">
+        <div id="visualization-section1" class="visualization-panel">
+            <div class="visualization-content">
+                <div class="visualization-container">
+                    <div id="scenario-function-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+        <div id="visualization-section2" class="visualization-panel">
+            <div class="visualization-content">
+                <div class="visualization-container">
+                    <div class="single-pie-chart">
+                        <div class="chart-wrapper-full">
+                            <h4>传统数据中心能耗构成</h4>
+                            <div id="traditional-energy-chart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="visualization-section3" class="visualization-panel">
+            <div class="visualization-content">
+                <div class="visualization-container">
+                    <div id="cooling-comparison-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第一章节：引言与背景 -->
+    <section id="section1" class="section">
+        <div class="container">
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h2>数字世界的能源图景：探寻计算的巨大能耗</h2>
+                    <div class="text-module">
+                        <h3>引言与背景</h3>
+                        <p>在数字时代，我们的生活几乎离不开数据。无论是一次点击、一次搜索，还是在社交平台上的一次滑动，都依赖于背后庞大的数据中心来完成处理。数据中心堪称数字经济的"心脏"，它们为海量信息的存储、计算和传输提供支持。然而，这个强大基础设施也在以惊人的速度消耗能源。据统计，全球数据中心的电力消耗已经占到全球总用电量的3%，并且这一比例仍在快速上升。</p>
+                        <p>数据中心的功能可以概括为三大方面：首先是集中式的数据存储，避免分散化带来的丢失风险；其次是计算支撑，为云计算、人工智能训练以及大数据分析提供所需算力；最后是业务保障，确保金融交易、医院挂号等关键服务24小时不间断运行。随着人工智能的爆发式增长，数据中心的能耗问题变得愈加突出。如何降低能耗，不仅关系到运营成本，更与可持续发展密切相关。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第二章节：能耗结构与痛点 -->
     <section id="section2" class="section">
         <div class="container">
-            <h2>核心技术：能耗的微观解剖与PUE的飞跃</h2>
-            <div class="energy-breakdown">
-                <div class="pie-chart-container">
-                    <canvas id="energyPieChart"></canvas>
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h2>数据中心的能耗解构：非计算能耗的巨大挑战</h2>
+                    <div class="text-module">
+                        <h3>传统数据中心的能耗构成</h3>
+                        <p>传统数据中心的能耗主要分布在以下几个模块（总占比为 100%）：</p>
+                        <div class="comparison-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>能耗模块</th>
+                                        <th>传统数据中心占比</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>IT 设备</td>
+                                        <td>45%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>冷却系统</td>
+                                        <td>40%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>电气系统</td>
+                                        <td>5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>其他能耗</td>
+                                        <td>10%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-module">
+                        <h3>非计算能耗的巨大挑战</h3>
+                        <p>传统数据中心的能耗分布呈现出一个令人意外的特点：只有不到一半的电力直接用于IT设备，其余大部分则消耗在冷却和配电等辅助系统上。换句话说，每一度电投入到计算中，都需要额外一度甚至更多的电来维持适宜的运行环境。尤其是冷却系统，在高温地区或高密度数据中心中，其能耗甚至可能超过计算本身。如何解决这一问题，成为数据中心节能的关键突破口。</p>
+                    </div>
                 </div>
-                <div class="pue-slider-container">
-                    <h3>PUE值调节器</h3>
-                    <div class="pue-definition">
-                        PUE（Power Usage Effectiveness）是数据中心能源使用效率的关键指标，计算公式为：<br>
-                        <strong>PUE = IT设备能耗/数据中心总能耗</strong>
-                    </div>
-                    <div class="slider-wrapper">
-                        <input type="range" id="pueSlider" min="1.0" max="1.6" step="0.01" value="1.46">
-                        <div class="slider-labels">
-                            <span>高效率</span>
-                            <span>低效率</span>
-                        </div>
-                        <div class="slider-markers" id="sliderMarkers"></div>
-                    </div>
-                    <div class="pue-value" id="pueValue">PUE: 1.54</div>
-                    <div class="pue-info" id="pueInfo">中国2021年全国数据中心平均PUE</div>
-                    <div class="pue-impact" id="pueImpact">
-                        <div class="impact-item">
-                            <span class="impact-label">IT设备占比:</span>
-                            <span class="impact-value" id="itPercent">64.9%</span>
-                        </div>
-                        <div class="impact-item">
-                            <span class="impact-label">制冷系统占比:</span>
-                            <span class="impact-value" id="coolingPercent">22.1%</span>
-                        </div>
-                        <div class="impact-item">
-                            <span class="impact-label">总能耗效率:</span>
-                            <span class="impact-value" id="efficiencyPercent">64.9%</span>
-                        </div>
-                    </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- 家庭能耗对比可视化 -->
-                    <div class="house-energy-comparison">
-                        <h4>能耗浪费对比：上海家庭10年用电</h4>
-                        <div class="houses-container" id="housesContainer"></div>
-                        <div class="comparison-info">
-                            <span id="wastedHousesInfo">当前PUE值下，浪费的能量相当于0个上海家庭10年用电量</span>
+    <!-- 第三章节：冷却技术的革新 -->
+    <section id="section3" class="section">
+        <div class="container">
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h2>从低效到高效：数据中心冷却技术的演进</h2>
+                    <div class="cooling-tech-modules">
+                        <p>冷却系统不仅是能耗最大的部分，也是节能潜力最大的环节。近年来，数据中心的冷却方式经历了从风冷到液冷的重大变革。如今，业界主要采用三种方式：全时自然冷、冷板式液冷和浸没式液冷。它们各有特点，适用于不同场景。</p>
+                    </div>
+                    
+                    <!-- 全时自然冷 -->
+                    <div class="cooling-tech-section">
+                        <h3>全时自然冷</h3>
+                        <div class="text-module">
+                            <p>全时自然冷通过引入和利用室外冷空气，结合智能控制系统，实现对机房的高效降温。在气候适宜的地区，这种方式能够将机械制冷的能耗降低60%到80%，同时投资和维护成本相对较低。例如，内蒙古和林格尔数据中心利用当地低气温的优势，全年90%的时间使用自然冷源，能效比（PUE）稳定在1.12左右。腾讯天津数据中心采用智能新风系统，结合间接蒸发冷却技术，年平均PUE达到1.15。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 冷板式液冷 -->
+                    <div class="cooling-tech-section">
+                        <h3>冷板式液冷</h3>
+                        <div class="text-module">
+                            <p>冷板式液冷更适合高功率密度的服务器。它通过紧贴CPU、GPU的金属冷板，将热量高效传导到循环冷却液中，再由换热器带走。这种方式散热效率比传统风冷高出数倍，同时能耗可降低30%到50%，在AI训练服务器等场景中尤为适用。阿里巴巴张北数据中心就部分采用了该技术，使PUE降至1.09。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 浸没式液冷 -->
+                    <div class="cooling-tech-section">
+                        <h3>浸没式液冷</h3>
+                        <div class="text-module">
+                            <p>浸没式液冷则代表了散热的未来方向。服务器整机直接浸没在绝缘液体中，热量以最快的方式传递出去。这种方法能支持极高功率密度的服务器，冷却能耗减少超过90%，理论上PUE可接近1.0。然而，它也面临高成本、维护复杂和标准化不足等挑战。微软、谷歌和Facebook等科技公司都在探索这一技术的应用前景。</p>
                         </div>
                     </div>
                 </div>
@@ -63,128 +145,58 @@
         </div>
     </section>
 
-    <!-- 数据中心实际运行数据 -->
-    <section id="dataCenterStats" class="section">
+    <!-- 第四章节：成果与未来展望 -->
+    <section id="section2" class="section">
         <div class="container">
-            <h2>数据中心实际运行数据</h2>
+            <h2>PUE的优化：通向绿色计算的道路</h2>
             
-            <!-- 顶部概览面板 -->
-            <div class="overview-panel">
-                <div class="overview-card">
-                    <div class="overview-icon">⚡</div>
-                    <div class="overview-content">
-                        <h3>实时功率</h3>
-                        <p class="overview-value">313 MW</p>
-                        <p class="overview-description">当前数据中心总功率消耗</p>
-                    </div>
-                </div>
-                <div class="overview-card">
-                    <div class="overview-icon">📊</div>
-                    <div class="overview-content">
-                        <h3>每日功率消耗</h3>
-                        <p class="overview-value">2912 MWh</p>
-                        <p class="overview-description">今日累计用电总量</p>
-                    </div>
-                </div>
+            <div class="text-module">
+                <h3>成果与未来展望</h3>
+                <p>衡量数据中心能源效率的核心指标是PUE（Power Usage Effectiveness），数值越接近1，代表非计算能耗越低。传统数据中心的PUE通常高于1.6，而通过上述先进冷却技术，可以将其逐步降低到1.1，甚至接近理想极限。这意味着同样的计算任务，未来可以在更低的能源消耗下完成。</p>
+                <p>事实上，人工智能训练的能耗已经成为社会关注的焦点。一次GPT-4的训练所消耗的能量，相当于十几个家庭十年的用电量。这一现实提醒我们，数字文明的繁荣背后是巨大的能源代价。如何在保证计算能力的同时，降低能源消耗，关乎整个行业的绿色转型。</p>
+                <p>展望未来，数据中心的可持续发展离不开新型冷却技术的普及，也需要可再生能源的接入和智能化的能源调度。每一次节能优化，都是迈向碳中和的重要一步；每一次技术创新，都是为数字世界注入更多绿色动力。唯有如此，我们才能在享受数字便利的同时，守护地球的健康与可持续。</p>
             </div>
             
-            <!-- PUE和WUE指标区 -->
-            <div class="metrics-section">
-                <div class="metrics-card">
-                    <h3>PUE指标</h3>
-                    <div class="gauge-container">
-                        <canvas id="pueGauge"></canvas>
-                        <div class="gauge-info">
-                            <p>PUE值越接近1，表示能效越高</p>
-                            <div class="gauge-values">
-                                <div class="gauge-value">
-                                    <span class="gauge-label">日PUE:</span>
-                                    <span class="gauge-number">1.1920</span>
-                                </div>
-                                <div class="gauge-value">
-                                    <span class="gauge-label">平均PUE:</span>
-                                    <span class="gauge-number">1.196</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="metrics-card">
-                    <h3>WUE指标</h3>
-                    <div class="gauge-container">
-                        <canvas id="wueGauge"></canvas>
-                        <div class="gauge-info">
-                            <p>WUE值越小，表示水资源利用效率越高</p>
-                            <div class="gauge-values">
-                                <div class="gauge-value">
-                                    <span class="gauge-label">日WUE:</span>
-                                    <span class="gauge-number">1.570</span>
-                                </div>
-                                <div class="gauge-value">
-                                    <span class="gauge-label">平均WUE:</span>
-                                    <span class="gauge-number">1.216</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 能耗和水耗数据区 -->
-            <div class="charts-section">
-                <div class="chart-card">
-                    <h3>能耗趋势</h3>
-                    <canvas id="energyTrendChart"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>水耗趋势</h3>
-                    <canvas id="waterTrendChart"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>累计能耗对比</h3>
-                    <canvas id="energyComparisonChart"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>累计用水量</h3>
-                    <canvas id="waterUsageChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- 详细数据统计 -->
-            <div class="stats-grid">
-                <!-- 能耗数据 -->
-                <div class="stats-card">
-                    <h3>能耗详情</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">当前功率:</span>
-                        <span class="stat-value" id="currentPower">10.5 kW</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">总功率:</span>
-                        <span class="stat-value" id="totalPower">44 kW</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">2025年累计能耗:</span>
-                        <span class="stat-value" id="yearlyEnergy">1.6299亿kWh</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">累计总能耗:</span>
-                        <span class="stat-value" id="cumulativeEnergy">49.292亿kWh</span>
-                    </div>
+            <div class="energy-breakdown-section">
+                <div class="pie-chart-container">
+                    <h3>能耗构成分解</h3>
+                    <div id="energyPieChart" class="chart-container"></div>
                 </div>
                 
-                <!-- 用水量数据 -->
-                <div class="stats-card">
-                    <h3>用水量详情</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">2025年累计用水量:</span>
-                        <span class="stat-value" id="yearlyWater">1,657,499.95吨</span>
+                <div class="pue-slider-container">
+                    <div class="pue-definition">
+                        <h3>PUE值定义</h3>
+                        <p>PUE (Power Usage Effectiveness) 是衡量数据中心能源效率的关键指标，表示数据中心总能耗与IT设备能耗的比值。</p>
+                        <p>PUE = 数据中心总能耗 / IT设备能耗</p>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">累计总用水量:</span>
-                        <span class="stat-value" id="cumulativeWater">4,721,972吨</span>
+                    
+                    <div id="pueValue" class="pue-value">PUE: 1.46</div>
+                    <div class="pue-slider-wrapper">
+                        <div id="sliderMarkers" class="slider-markers"></div>
+                        <input type="range" id="pueSlider" min="1.0" max="1.7" step="0.01" value="1.46">
+                    </div>
+                    <div id="pueInfo" class="pue-info">一线城市标准 - 经济适用水平</div>
+                    
+                    <div class="pue-impact">
+                        <h4>影响指标</h4>
+                        <div class="impact-item">
+                            <span>IT设备占比:</span> <span id="itPercent" class="impact-value">68.5%</span>
+                        </div>
+                        <div class="impact-item">
+                            <span>制冷系统占比:</span> <span id="coolingPercent" class="impact-value">21.5%</span>
+                        </div>
+                        <div class="impact-item">
+                            <span>效率提升空间:</span> <span id="efficiencyPercent" class="impact-value">68.5%</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <div class="house-energy-comparison">
+                <h3>家庭能耗对比</h3>
+                <!-- <p>GPT-4单次训练的能耗相当于 <strong>${TOTAL_HOUSES}</strong> 个上海家庭10年的用电量</p> -->
+                <div id="housesContainer" class="houses-container"></div>
+                <p id="wastedHousesInfo">当前PUE值下，每次GPT4训练一次浪费的能量相当于12.8个上海家庭10年用电量</p>
             </div>
         </div>
     </section>

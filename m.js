@@ -4,7 +4,53 @@ const GRAPHS = 0 + 1;
 const bind_start = [null, 1, 3];
 const bind_end = [null, 2, 3];
 
-const USE_MASKS = false, OUTPUT_MOUSE = true, OUTPUT_SCROLL = false;
+const chapters = [`序言`, `流动的能源`, `计算的能源`, `自然的能源`, `终极的能源`, `尾声`];
+const MENU_BTN_WIDTH = 300, MENU_AUTO_CLOSE_T = 500;
+
+const menu_targets = [1, 1, 5, 6, 6, 8];
+
+const /** @type {HTMLDivElement} */ menu = document.getElementById(`menu`);
+let menu_closed = false, menu_last_opened = performance.now();
+
+for(let i = 0; i < chapters.length; ++i){
+    const r = document.createElement(`div`);
+    r.classList.add(`menu_btn`);
+    r.style.width = MENU_BTN_WIDTH + `px`;
+    if(!i)
+        r.classList.add(`top`);
+    if(i === chapters.length - 1)
+        r.classList.add(`bottom`);
+    r.innerText = chapters[i];
+    r.addEventListener(`click`, (e) => {
+        goto(docs[menu_targets[i]]);
+    });
+    menu.appendChild(r);
+}
+
+function check_menu_hitbox(){
+    const mono = (a, b, c) => a <= b && b <= c;
+    if(mousex < MENU_BTN_WIDTH / 2 && mono(menu.offsetTop, mousey, menu.offsetTop + menu.offsetHeight) || 
+       mousex < MENU_BTN_WIDTH / 4){
+        menu_last_opened = performance.now();
+        if(menu_closed){
+            menu_closed = false;
+            menu.classList.toggle(`closed`);
+        }
+    }
+    if(mousex > MENU_BTN_WIDTH || !mono(menu.offsetTop, mousey, menu.offsetTop + menu.offsetHeight)){
+        if(!menu_closed){
+            if(performance.now() - menu_last_opened > MENU_AUTO_CLOSE_T){
+                menu_closed = true;
+                menu.classList.toggle(`closed`);
+            }else{
+                setTimeout(check_menu_hitbox, MENU_AUTO_CLOSE_T - performance.now() - menu_last_opened + 50);
+            }
+        }
+    }
+}
+
+
+const USE_MASKS = false, OUTPUT_MOUSE = false, OUTPUT_SCROLL = false;
 
 const masks = new Array(DOCS).fill(0).map((_, i) => {
     // if(expand_mode[i] === `screen`){
@@ -114,6 +160,13 @@ function update_graphs(){
 
 let last_scroll = 0, changed_scroll = false;
 function scroll_update(/** @type {number} */ dy){
+    if(Math.abs(dy) > 10){
+        let slices = Math.trunc(Math.ceil(Math.abs(dy) / 10));
+        // console.log(`${dy} -> ${dy / slices} x ${slices}`);
+        for(let i = 0; i < slices; ++i)
+            scroll_update(dy / slices);
+        return;
+    }
     let now_scroll = last_scroll + dy;
     // if(changed_scroll){
     //     update_graphs();
@@ -148,7 +201,14 @@ function scroll_update(/** @type {number} */ dy){
                     // document.body.scrollTop = docs[i].offsetTop;
                     // console.log(`${document.documentElement.scrollTop} == ${docs[i].offsetTop}?`);
                     // changed_scroll = true;
-                    nw.scrollBy(0, now_scroll - last_scroll);
+                    
+                    const de = docs[i].contentDocument.documentElement;
+
+                    console.log(`before:`, de.scrollTop);
+                    de.scrollTop = de.scrollTop + now_scroll - last_scroll;
+                    // nw.scrollBy(0, now_scroll - last_scroll);
+                    console.log(`after:`, de.scrollTop);
+                    
                     target_now_scroll = docs[i].offsetTop;
                     // masks[i].hidden = true;
                 }else{
@@ -166,12 +226,13 @@ function scroll_update(/** @type {number} */ dy){
 
 let sec = 1, hs = new Array(DOCS).fill(Infinity);
 
-let mousex = -1, mousey = -1;
+let mousex = window.innerWidth / 2, mousey = window.innerHeight / 2;
 document.addEventListener(`mousemove`, (e) => {
     mousex = e.x;
     mousey = e.y;
     if(OUTPUT_MOUSE)
         console.log(`${mousey} @main`);
+    check_menu_hitbox();
 });
 
 // document.addEventListener(`scroll`, (e) => {
@@ -208,6 +269,7 @@ function add_messy_listeners(/** @type {HTMLIFrameElement} */ d){
         mousey = e.y + d.offsetTop - window.scrollY;
         if(OUTPUT_MOUSE)
             console.log(`${mousey} @${d.id}`);
+        check_menu_hitbox();
     });
     // d.contentDocument.body.addEventListener(`wheel`, (e) => {
     //     console.log(d);
@@ -232,3 +294,30 @@ docs.forEach((d) => {
         });
 });
 setTimeout(update_docs, 100);
+setTimeout(update_docs, 200);
+
+function goto(/** @type {HTMLIFrameElement} */ element){
+    // while(true){
+    let rstate = window.scrollY < element.offsetTop;
+    function f(){
+        if(rstate)
+            scroll_update(1);
+        else
+            scroll_update(-1);
+        if(rstate && window.scrollY > element.offsetTop - 5 || !rstate && window.scrollY < element.offsetTop + 5)
+            // break;
+            return;
+        requestAnimationFrame(f);
+    }
+    // }
+    requestAnimationFrame(f);
+}
+
+// function whatever(){
+//     let r = [];
+//     for(let i = 1; i < docs.length; ++i)
+//         r.push(docs[i].offsetTop);
+//     console.log(r);
+// }
+
+// setInterval(whatever, 500);

@@ -42,31 +42,75 @@
                 height: calc(100vh - 6vw);
             }
             .full_screen_doc{
+                padding: 0;
+                margin: 0;
                 width: 100%;
                 overflow: hidden;
             }
             .graphs.relative{
                 position: absolute;
             }
-            #graph2{
-                padding: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-            }
             .suppress_wheel{
                 pointer-events: auto !important;
+            }
+            .menu_rect{
+                padding: 0;
+                margin: 0;
+                position: fixed;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                align-content: center;
+                pointer-events: none;
+            }
+            .menu{
+                border-radius: 0 1vh 1vh 0;
+                padding: 1vh;
+                margin: 0;
+                background-color: rgba(235, 235, 235, 0.7);
+                transition: transform 0.4s ease;
+                pointer-events: auto;
+            }
+            .menu.closed{
+                transform: translateX(-100%);
+            }
+            .menu_btn{
+                padding: 1vh;
+                margin: 0;
+                background-color: rgb(200, 200, 200, 0.8);
+                color: rgb(45, 45, 45);
+                font-family: 'Courier New', Courier, monospace;
+            }
+            .menu_btn:hover{
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+            .menu_btn.top{
+                border-radius: 1vh 1vh 0 0;
+            }
+            .menu_btn.bottom{
+                border-radius: 0 0 1vh 1vh;
             }
         </style>
     </head>
     <body>
+        <div class="menu_rect" id="menu_rect">
+            <div class="menu" id="menu"></div>
+        </div>
+
         <div class="ground back"></div>
         <!-- <iframe src="part1/2020text.html" class="left_panel_doc" id="doc1"></iframe>
         <iframe src="part1/2025text.html" class="left_panel_doc" id="doc2"></iframe> -->
+        
         <iframe src="part1/website_head.html" class="full_screen_doc" id="doc1" scrolling="no"></iframe>
         <iframe src="part1/flowchart.html" class="full_screen_doc" id="doc2" scrolling="no"></iframe>
         <iframe src="part1/website.html" class="full_screen_doc" id="doc3" scrolling="no"></iframe>
         <iframe src="part1/visualization.html" class="full_screen_doc" id="doc4" scrolling="no"></iframe>
+
+        <!-- <iframe src="part2/index.html" class="full_screen_doc" id="doc1" scrolling="no"></iframe>
+        <iframe src="part2/index.html" class="full_screen_doc" id="doc2" scrolling="no"></iframe>
+        <iframe src="part2/index.html" class="full_screen_doc" id="doc3" scrolling="no"></iframe>
+        <iframe src="part2/index.html" class="full_screen_doc" id="doc4" scrolling="no"></iframe> -->
+        
         <iframe src="part2/index.html" class="full_screen_doc" id="doc5" scrolling="no"></iframe>
         <iframe src="part4/index.html" class="full_screen_doc" id="doc6" scrolling="no"></iframe>
         <iframe src="ending.html" class="full_screen_doc" id="doc7" scrolling="no"></iframe>
