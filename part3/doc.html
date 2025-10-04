@@ -139,10 +139,6 @@
             chartiframe.contentWindow.postMessage({prog: calcProg(center - dynamic.offsetTop, prog0.offsetTop, prog1.offsetTop)});
         }
 
-        addEventListener("message", (e) => {
-            if (typeof e.data.centerPos === "number")
-                setCenterPos(e.data.centerPos);
-        })
         addEventListener("resize", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
         addEventListener("scroll", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
         addEventListener("wheel", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
