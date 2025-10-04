@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>风速分布可视化</title>
+	<style>
+		:root {
+			overflow: hidden;
+		}
+		body {
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+
+	<script>
+		const seg_density = 2;
+		const max_spd = 35;
+		const num_segs = seg_density * max_spd;
+
+		function map_seg(/** @type {number} */ spd) {
+			const seg = Math.floor(spd * seg_density);
+			if (seg < 0)
+				return 0;
+			if (seg >= num_segs)
+				return num_segs - 1;
+			return seg;
+		}
+
+		class Block {
+			/** @type {Date} */ d;
+			/** @type {number} */ spd;
+			/** @type {number} */ deg;
+			/** @type {number} */ seg;
+			/** @type {number} */ idx;
+			
+			constructor(/** @type {Date} */ d, /** @type {number} */ spd, /** @type {number} */ deg, /** @type {number} */ idx) {
+				this.d = d;
+				this.spd = spd;
+				this.deg = deg;
+				this.seg = map_seg(spd);
+				this.idx = idx;
+			}
+		}
+	</script>
+	<script>
+		const /** @type {HTMLCanvasElement} */ canvas = document.getElementById("canvas");
+		const ctx = canvas.getContext("2d");
+		const vel = 2e-5;
+		var /** @type {Block[]} */ blocks = [];
+		const /** @type {Map<number, Block>} */ extremes = new Map();
+		var max_freq = 0;
+		var max_extremes_freq = 0;
+		var prog = 0;
+		const GAMMA = 0.57721;
+		var mean = 0, variance = 0;
+		var mu = 0, beta = 0;
+		const distrib_start = 13;
+		const distrib_length = 18;
+
+		function gumbel_cdf(/** @type {number} */ spd) {
+			return Math.exp(-Math.exp(-(spd - mu) / beta));
+		}
+
+		async function init(path = "../wind.csv") {
+			const cnt = new Array(num_segs).fill(0);
+			const cnt_extremes = new Array(num_segs).fill(0);
+			const data = await fetch(path).then((res) => res.text()).then((s) => s.split(/\r\n/));
+			extremes.clear();
+			blocks = data.filter((s) => /^\d{4}-\d\d-\d\dT\d\d:\d\d(?:Z|[+-]\d{4})(?:,\d+(?:|\.\d+)){2}$/.test(s)).map((s, i) => {
+				const d = s.split(",");
+				const date = new Date(d[0]);
+				const mo = date.getFullYear() * 12 + date.getMonth();
+				const spd = Number.parseFloat(d[1]);
+				const block = new Block(date, spd, Number.parseFloat(d[2]), i);
+				const annual_extreme = extremes.get(mo);
+				if (typeof annual_extreme === "undefined" || annual_extreme.spd < spd)
+					extremes.set(mo, block);
+				return block;
+			});
+			for (const block of blocks) {	
+				if (max_freq < ++cnt[block.seg])
+					max_freq = cnt[block.seg];
+			}
+			mean = variance = 0;
+			for (const [mo, block] of extremes) {
+				mean += block.spd;
+				if (max_extremes_freq < ++cnt_extremes[block.seg])
+					max_extremes_freq = cnt_extremes[block.seg];
+			}
+			mean /= extremes.size;
+			for (const [mo, block] of extremes) {
+				variance += (block.spd - mean) ** 2;
+			}
+			variance /= extremes.size;
+			beta = Math.sqrt(6 * variance) / Math.PI;
+			mu = mean - GAMMA * beta;
+			resize(true);
+			render(prog);
+			addEventListener("resize", () => {resize(); render(prog);});
+			addEventListener("message", (e) => {
+				if (typeof e.data.prog === "number")
+					render(e.data.prog);
+			});
+			// addEventListener("wheel", (e) => {
+			// 	prog += e.deltaY / 10000;
+			// 	render(prog);
+			// });
+		}
+
+		function mapx(/** @type {number} */ x) {
+			return 32 + (canvas.width - 64) * x;
+		}
+		function mapy(/** @type {number} */ y) {
+			return (canvas.height - 32) * (1 - y);
+		}
+
+		function render(/** @type {number} */ prog) {
+			const t = prog * blocks.length;
+			const cnt = new Array(num_segs).fill(0);
+			const cnt_extremes = new Array(num_segs).fill(0);
+			ctx.fillStyle = "#fff";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.font = "24px sans-serif";
+			ctx.fillStyle = "#04c";
+			ctx.fillRect(29, canvas.height - 32, canvas.width - 29, 2);
+			ctx.fillText("风速 (m/s)", canvas.width - 120, canvas.height - 8);
+			ctx.fillStyle = "#fcc";
+			ctx.fillRect(canvas.width - 31, 0, 2, canvas.height - 32);
+			ctx.fillText("极", canvas.width - 28, 36);
+			ctx.fillText("端", canvas.width - 28, 60);
+			ctx.fillText("风", canvas.width - 28, 84);
+			ctx.fillText("频", canvas.width - 28, 108);
+			ctx.fillStyle = "#8cf";
+			ctx.fillRect(29, 0, 2, canvas.height - 32);
+			ctx.fillText("风", 4, 36);
+			ctx.fillText("频", 4, 60);
+			for (let i = 0; i <= t && i < blocks.length; i++) {
+				cnt[blocks[i].seg]++;
+			}
+			for (const [mo, block] of extremes) {
+				if (block.idx <= t)
+					cnt_extremes[block.seg]++;
+			}
+			for (let i = 0; i < num_segs; i++) {
+				const left = Math.floor(mapx(i / num_segs)) + 1;
+				const right = Math.floor(mapx((i + 1) / num_segs)) - 1;
+				let top = Math.floor(mapy(0.8 * cnt[i] / max_freq));
+				ctx.fillStyle = "#8cf";
+				ctx.fillRect(left, top, right - left, canvas.height - 32 - top);
+				top = Math.floor(mapy(0.5 * cnt_extremes[i] / max_extremes_freq));
+				ctx.fillStyle = "#f003";
+				ctx.fillRect(left + 1, top, right - left - 2, canvas.height - 32 - top);
+			}
+			ctx.fillStyle = "#04c";
+			for (let i = t >= 0 ? (t >> 5) + 1 : 0; (i << 5) < blocks.length; i++) {
+				const x = mapx(blocks[i << 5].spd / max_spd);
+				const y = mapy(vel * (blocks[i << 5].idx - t));
+				if (y < 0)
+					break;
+				ctx.fillRect(x - 2, y - 4, 4, 4);
+			}
+			ctx.fillStyle = "#b00";
+			for (const [mo, block] of extremes) {
+				const x = mapx(block.spd / max_spd);
+				const y = mapy(vel * (block.idx - t));
+				if (y < 0 || block.idx <= t)
+					continue;
+				ctx.fillRect(x - 3, y - 6, 6, 6);
+			}
+			if (t >= blocks.length) {
+				const tagx = Math.floor(mapx(mu / max_spd));
+				const tagy = Math.floor(mapy(0.5 / Math.E / beta / seg_density * extremes.size / max_extremes_freq));
+				ctx.strokeStyle = "#b00";
+				ctx.lineWidth = 4;
+				ctx.beginPath();
+				for (let i = 0; i < distrib_length * seg_density; i++) {
+					const spd0 = distrib_start + i / seg_density;
+					const spd = distrib_start + (i + 0.5) / seg_density;
+					const spd1 = distrib_start + (i + 1) / seg_density;
+					const y = extremes.size * (gumbel_cdf(spd1) - gumbel_cdf(spd0));
+					if (i)
+						ctx.lineTo(mapx(spd / max_spd), mapy(0.5 * y / max_extremes_freq));
+					else
+						ctx.moveTo(mapx(spd / max_spd), mapy(0.5 * y / max_extremes_freq));
+				}
+				ctx.stroke();
+				ctx.fillStyle = "#b00";
+				ctx.font = "sans-serif 16px";
+				ctx.fillText(`μ = ${mu.toFixed(3)} m/s`, tagx, tagy - 40);
+				ctx.fillText(`β = ${beta.toFixed(3)} m/s`, tagx, tagy - 12);
+			}
+			ctx.strokeStyle = "#8cf";
+			ctx.lineWidth = 2;
+			ctx.stroke(new Path2D("M 24 12 l 6 -12 l 6 12"));
+			ctx.strokeStyle = "#fcc";
+			ctx.stroke(new Path2D(`M ${canvas.width - 36} 12 l 6 -12 l 6 12`));
+			ctx.strokeStyle = "#04c";
+			ctx.stroke(new Path2D(`M ${canvas.width - 12} ${canvas.height - 37} l 12 6 l -12 6`));
+			ctx.fillStyle = "#04c";
+			for (let i = 5; i + 10 <= max_spd; i += 5) {
+				const x = Math.floor(mapx(i / max_spd));
+				ctx.fillRect(x - 1, canvas.height - 32, 2, 8);
+				ctx.fillText(i, x, canvas.height - 8);
+			}
+		}
+
+		function resize(force = false) {
+			if (!force && canvas.width === window.innerWidth && canvas.height === window.innerHeight)
+				return false;
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			return true;
+		}
+
+		init();
+	</script>
+</body>
+</html>
