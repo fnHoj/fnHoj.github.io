@@ -6,6 +6,7 @@
             body{
                 overscroll-behavior: none;
                 overflow: hidden;
+                margin: 0;
             }
             .ground{
                 position: fixed;
@@ -90,12 +91,34 @@
             .menu_btn.bottom{
                 border-radius: 0 0 1vh 1vh;
             }
+            .menu2{
+                margin: 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background-color: rgba(235, 235, 235, 0.7);
+                display: flex;
+            }
+            .menu2_btn{
+                padding: 0;
+                margin: 0;
+                background-color: rgba(225, 225, 225, 0.8);
+                color: rgb(45, 45, 45);
+                font-family: 'Courier New', Courier, monospace;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .menu2_btn:hover{
+                background-color: rgba(255, 255, 255, 0.8);
+            }
         </style>
     </head>
     <body>
-        <div class="menu_rect" id="menu_rect">
+        <!-- <div class="menu_rect" id="menu_rect">
             <div class="menu" id="menu"></div>
-        </div>
+        </div> -->
+        <!-- <div class="menu2" id="menu"></div> -->
 
         <div class="ground back"></div>
         <!-- <iframe src="part1/2020text.html" class="left_panel_doc" id="doc1"></iframe>
@@ -112,14 +135,15 @@
         <iframe src="part2/index.html" class="full_screen_doc" id="doc4" scrolling="no"></iframe> -->
         
         <iframe src="part2/index.html" class="full_screen_doc" id="doc5" scrolling="no"></iframe>
-        <iframe src="part4/index.html" class="full_screen_doc" id="doc6" scrolling="no"></iframe>
-        <iframe src="ending.html" class="full_screen_doc" id="doc7" scrolling="no"></iframe>
+        <iframe src="part3/doc.html" class="full_screen_doc" id="doc6" scrolling="no"></iframe>
+        <iframe src="part4/index.html" class="full_screen_doc" id="doc7" scrolling="no"></iframe>
+        <iframe src="ending.html" class="full_screen_doc" id="doc8" scrolling="no"></iframe>
         
         <!-- <iframe src="/part1/main.html" class="graphs" id="graph1"></iframe> -->
         <!-- <iframe src="graph1.html" class="graphs" id="graph1"></iframe> -->
         <!-- <iframe src="part2/index.html" class="graphs" id="graph2"></iframe> -->
 
-        <script src="./m.js" type="module"></script>
+        <script src="./main.js" type="module"></script>
         <!-- <div class="ground fore" id="foreground"></div> -->
     </body>
 </html>

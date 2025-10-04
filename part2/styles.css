@@ -494,7 +494,7 @@ body {
 }
 
 /* 响应式设计 */
-@media (max-width: 1200px) {
+/* @media (max-width: 1200px) {
     .energy-breakdown-section {
         flex-direction: column;
     }
@@ -526,4 +526,4 @@ body {
     .chart-container {
         height: 300px;
     }
-}
+} */

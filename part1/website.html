@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>流动的能源-交通电动化的机遇与挑战</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- 基本页面样式 --- */
+        /* --- 基本页面样式 (来自 website.html) --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.8;
@@ -20,7 +21,7 @@
             padding: 0 20px;
         }
 
-        /* --- 标题样式 --- */
+        /* --- 标题样式 (来自 website.html) --- */
         h1, h2, h3, h4 {
             font-weight: 600;
             margin-top: 2em;
@@ -45,7 +46,7 @@
             font-size: 1.4em;
         }
 
-        /* --- 图片容器样式 --- */
+        /* --- 图片容器样式 (来自 website.html) --- */
         .image-container {
             display: flex;
             gap: 20px;
@@ -57,8 +58,7 @@
         .image-container img {
             max-width: 48%;
             width: auto;
-            max-height: 350px;
-            height: auto;
+            height: 300;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             background-color: #fff;
@@ -70,7 +70,7 @@
             max-width: 70%;
         }
         
-        /* --- 列表与段落样式 --- */
+        /* --- 列表与段落样式 (来自 website.html) --- */
         ul, ol { 
             padding-left: 25px; 
         }
@@ -81,7 +81,7 @@
             margin-bottom: 1em;
         }
 
-        /* --- 表格样式 --- */
+        /* --- 表格样式 (来自 website.html) --- */
         table {
             width: 100%; 
             border-collapse: collapse; 
@@ -109,6 +109,116 @@
         .highlight { 
             background-color: #e7f5e7 !important; 
         }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse; /* 移除单元格间隙 */
+            background-color: white; /* 设置表格背景色为白色 */
+        }
+
+        /* 同时为表头和单元格设置样式 */
+        .custom-table th, .custom-table td {
+            border: none; /* 隐藏边框 */
+            text-align: center; /* 内容水平居中 */
+            background-color: white; /* 设置表格背景色为白色 */
+        }
+       
+        /* --- 从 sheet.html 合并的样式 --- */
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .container h1, .container h2 {
+            text-align: center;
+            color: #2c3e50;
+            border: none; /* 覆盖原有H2样式 */
+            padding-left: 0;
+        }
+        .container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+        }
+        .container th, .container td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .container th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        .container tr:nth-child(even) {
+            background-color: #f2f2f2; 
+        }
+        .container tbody tr:last-of-type { 
+            border-bottom: 1px solid #ddd; /* 覆盖原有表格样式 */
+        }
+        .container tr:hover {
+            background-color: #e8f4f8;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+        .interactive-controls {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .interactive-controls h3 {
+            margin-top: 0;
+        }
+        .interactive-controls label {
+            margin: 5px 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .interactive-controls input {
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+        .color-box {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+        .notes {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .conclusion {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #eaf5ff;
+            border-left: 5px solid #3498db;
+            border-radius: 5px;
+        }
+        .conclusion h2 {
+            margin-top: 0;
+            text-align: left;
+        }
+
     </style>
 </head>
 <body>
@@ -119,19 +229,19 @@
         <ul>
             <li>(1) 超高机器人密度: 在焊装车间，自动化率普遍超过 95%。
                 <div class="image-container">
-                    <img src="./1.png" alt="焊装车间机器人1">
-                    <img src="./12.png" alt="焊装车间机器人2">
+                    <img src="./1.png" alt="自动化质量检测1" height = "300">
+                    <img src="./12.png" alt="自动化质量检测2" height = "300">
                 </div>
             </li>
             <li>(2) 全程自动化物流: 由 AGV(自动导引运输车)、EMS(空中输送系统)和 robotic carriers (机器人搬运车)完成。
                 <div class="image-container">
-                    <img src="./2.png" alt="自动化物流系统">
+                    <img src="./2.png" alt="自动化物流系统" height = "300">
                 </div>
             </li>
             <li>(3) 自动化质量检测: 广泛应用机器视觉系统进行自动质量检查。
                 <div class="image-container">
-                    <img src="./3.png" alt="自动化质量检测1">
-                    <img src="./4.png" alt="自动化质量检测2">
+                    <img src="./3.png" alt="自动化质量检测1" height = "300">
+                    <img src="./4.png" alt="自动化质量检测2" height = "300">
                 </div>
             </li>
         </ul>
@@ -164,75 +274,233 @@
                 <tr><td>载重</td><td class="highlight">燃油轻便, 适合重载长途</td><td>电池重, 影响有效载重</td></tr>
             </tbody>
         </table>
-        <div class="image-container">
-            <img src="./5.png" alt="燃油汽车示意图">
-            <img src="./6.png" alt="电动汽车示意图">
-        </div>
-
+        
         <!-- Part 3: 电动汽车电池 -->
         <h2>Part3 电动汽车电池</h2>
-        <h3>当下两种电池的比较——两种锂电池</h3>
-        <!-- MODIFIED: 修正了高亮单元格的位置 -->
-        <table>
-            <thead><tr><th></th><th>三元锂电池</th><th>磷酸铁锂电池</th></tr></thead>
-            <tbody>
-                <tr><td>能量密度-续航</td><td class="highlight">能量密度高, 续航高</td><td>能量密度低, 续航低</td></tr>
-                <tr><td>安全性</td><td>高温或碰撞时易燃烧</td><td class="highlight">化学结构稳定, 难分解</td></tr>
-                <tr><td>寿命-循环适用次数</td><td>1500-2500 次</td><td class="highlight">3000-6000 次</td></tr>
-                <tr><td>温度</td><td class="highlight">低温下能量衰减较小</td><td>低温下能量衰减明显</td></tr>
-                <tr><td>成本</td><td>含 Ni、Co、Mn、Al 的化合物, 贵</td><td class="highlight">LiFePO₄ 中 Fe、P 丰富且便宜</td></tr>
-                <tr><td>环境影响</td><td>含重金属, 较不环保</td><td class="highlight">不含重金属, 较环保</td></tr>
-            </tbody>
-        </table>
-        <p><strong>总结:</strong> 要跑得远、不怕冷, 选三元锂；要更安全、更便宜、用得更久, 选磷酸铁锂。</p>
-        <div class="image-container"><img src="./7.png" alt="电池对比图"></div>
+
+        <!-- ===== START: 从 sheet.html 插入的内容 ===== -->
+        <div class="container">    
+            <h2>详细性能参数对比表</h2>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>对比维度</th>
+                            <th>三元锂电池 (NMC/NCA)</th>
+                            <th>磷酸铁锂电池 (LFP)</th>
+                            <th>固态电池</th>
+                            <th>钠离子电池</th>
+                            <th>氢燃料电池</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>质量能量密度 (Wh/kg)</b></td>
+                            <td><strong>较高</strong>: 200-300</td>
+                            <td><strong>中等</strong>: 160-200</td>
+                            <td><strong>极高</strong>: 理论可达 400-500+</td>
+                            <td><strong>较低</strong>: 100-160 (下一代有望突破200)</td>
+                            <td><strong>极高</strong> (仅燃料), 但系统级<strong>较低</strong>: 400-600</td>
+                        </tr>
+                        <tr>
+                            <td><b>体积能量密度 (Wh/L)</b></td>
+                            <td><strong>较高</strong>: 600-750</td>
+                            <td><strong>中等</strong>: 300-450</td>
+                            <td><strong>极高</strong>: 潜力 >1000</td>
+                            <td><strong>较低</strong>: 250-375</td>
+                            <td><strong>低</strong>: 系统体积庞大</td>
+                        </tr>
+                        <tr>
+                            <td><b>循环寿命 (80% DOD)</b></td>
+                            <td><strong>中等</strong>: 1500-3000 次</td>
+                            <td><strong>高</strong>: 3000-6000+ 次</td>
+                            <td><strong>极高</strong>: >5000 次，理论可达万次</td>
+                            <td><strong>高</strong>: 2000-6000 次</td>
+                            <td><strong>高</strong>: >15000 小时 (电堆寿命)</td>
+                        </tr>
+                        <tr>
+                            <td><b>安全性 (抗热失控能力)</b></td>
+                            <td><strong>较低</strong>: 需复杂BMS管理</td>
+                            <td><strong>高</strong>: 结构稳定，不易燃爆</td>
+                            <td><strong>极高</strong>: 无易燃电解液</td>
+                            <td><strong>较高</strong>: 热稳定性优于三元锂</td>
+                            <td><strong>高</strong> (系统级): 但需高压储氢罐</td>
+                        </tr>
+                        <tr>
+                            <td><b>成本 ($/kWh)</b></td>
+                            <td><strong>较高</strong>: 依赖钴、镍</td>
+                            <td><strong>低</strong>: 不含贵金属</td>
+                            <td><strong>极高 (当前)</strong>: 工艺复杂</td>
+                            <td><strong>极低</strong>: 钠资源丰富</td>
+                            <td><strong>高</strong>: 依赖铂催化剂</td>
+                        </tr>
+                        <tr>
+                            <td><b>工作温度范围</b></td>
+                            <td><strong>一般</strong>: -20°C to 60°C</td>
+                            <td><strong>一般</strong>: -20°C to 60°C, 低温衰减更显著</td>
+                            <td><strong>宽</strong>: 潜力 -40°C to 100°C+</td>
+                            <td><strong>宽</strong>: -40°C to 80°C, 低温性能<strong>优异</strong></td>
+                            <td><strong>较宽</strong>: -30°C to 85°C</td>
+                        </tr>
+                        <tr>
+                            <td><b>快充/加注速度</b></td>
+                            <td><strong>较快</strong>: 0.5-2 小时</td>
+                            <td><strong>较快</strong>: 0.5-2 小时</td>
+                            <td><strong>极快</strong>: 潜力巨大，目标10-15分钟</td>
+                            <td><strong>非常快</strong>: 15分钟可充80%以上</td>
+                            <td><strong>极快</strong>: 3-5 分钟加满</td>
+                        </tr>
+                        <tr>
+                            <td><b>原材料可持续性</b></td>
+                            <td><strong>受限</strong>: 锂、钴、镍资源分布不均</td>
+                            <td><strong>优秀</strong>: 铁、磷资源丰富</td>
+                            <td><strong>挑战与机遇并存</strong>: 依赖锂</td>
+                            <td><strong>极优秀</strong>: 钠储量巨大</td>
+                            <td><strong>挑战</strong>: 催化剂需铂金；制氢依赖能源结构</td>
+                        </tr>
+                        <tr>
+                            <td><b>技术成熟度 (TRL)</b></td>
+                            <td><strong>TRL 9</strong> (完全商业化)</td>
+                            <td><strong>TRL 9</strong> (完全商业化)</td>
+                            <td><strong>TRL 4-7</strong> (仍在研发)</td>
+                            <td><strong>TRL 7-8</strong> (开始商业化)</td>
+                            <td><strong>TRL 8-9</strong> (商业化但受限)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <h2>可交互综合实力雷达图</h2>
+            <div class="interactive-controls">
+                <label><input type="checkbox" id="cb-0" onchange="updateChart()" checked> <span class="color-box" style="background-color: rgba(255, 99, 132, 1);"></span>三元锂电池</label>
+                <label><input type="checkbox" id="cb-1" onchange="updateChart()" checked> <span class="color-box" style="background-color: rgba(54, 162, 235, 1);"></span>磷酸铁锂电池</label>
+                <label><input type="checkbox" id="cb-2" onchange="updateChart()" checked> <span class="color-box" style="background-color: rgba(255, 206, 86, 1);"></span>固态电池</label>
+                <label><input type="checkbox" id="cb-3" onchange="updateChart()" checked> <span class="color-box" style="background-color: rgba(75, 192, 192, 1);"></span>钠离子电池</label>
+                <label><input type="checkbox" id="cb-4" onchange="updateChart()" checked> <span class="color-box" style="background-color: rgba(153, 102, 255, 1);"></span>氢燃料电池</label>
+            </div>
+    
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+                <p class="notes">
+                    <strong>图表说明:</strong> 各项指标已归一化为10分制评分。<strong>成本效益</strong>得分越高代表成本越低。
+                </p>
+            </div>
+    
+            <div class="conclusion">
+                <p>通过以上对比可以看出，不存在任何一种“完美”的电池技术，每种路线都有其独特的优势和应用场景。当前市场由<strong>三元锂电池</strong>（追求能量密度）和<strong>磷酸铁锂电池</strong>（追求成本与安全）共同主导。<strong>钠离子电池</strong>凭借其极致的成本优势和优异的低温性能，正作为锂电的有力补充，在储能和低速交通工具领域迅速崛起。展望未来，<strong>固态电池</strong>因其在安全性和能量密度上的颠覆性潜力，被视为下一代乘用车的终极解决方案，但其商业化仍面临成本与工艺挑战。而<strong>氢燃料电池</strong>则以其无可比拟的加注速度和长续航能力，在重型商用车、船舶等难以纯电化的领域展现出广阔的应用前景。未来能源格局必将是多种技术路线并存、优势互补、共同推动全球能源向清洁化、可持续化方向发展的多元化体系。</p>
+            </div>
+        </div>
+        <!-- ===== END: 从 sheet.html 插入的内容 ===== -->
         
-        <h3>三种未来电池技术——固态电池</h3>
-        <h4>优势</h4>
-        <ul>
-            <li>极高的安全性: 无泄漏、无腐蚀; 不可燃 / 耐高温; 抑制锂枝晶从而防止枝晶刺穿隔膜导致的内短路。
-                <div class="image-container"><img src="./8.png" alt="固态电池结构"></div>
-            </li>
-            <li>高能量密度: 固态电解质本身可以充当隔膜的功能, 使得电池结构更紧凑; 兼容高容量电极材料, 可更安全地使用金属锂作为负极。</li>
-            <li>更长的循环寿命: 超过 10000 次。</li>
-            <li>更宽的工作温度范围: 可在 >100℃ 环境下稳定工作。</li>
-            <li>简化封装系统: 减少冷却系统与防爆结构</li>
-        </ul>
-        <h4>劣势</h4>
-        <ul>
-            <li>固-固界面问题: 电极与电解质均为固体, 易产生空隙; 两者间因化学性质不兼容而增加电阻。</li>
-            <li>制作成本昂贵: 锗、镧昂贵; 生产工艺复杂。</li>
-            <li>快充性能目前受限。</li>
-        </ul>
-        <div class="image-container"><img src="./9.png" alt="固态电池示意图"></div>
+        <!-- ===== START: 新增的总结部分 ===== -->
+        <h2>Part4 总结</h2>
         
-        <h3>三种未来电池技术——钠离子电池</h3>
-        <h4>优势</h4>
-        <ul>
-            <li>成本低廉: 原料丰富且分布均匀, 储量是锂的 420 倍以上。</li>
-            <li>安全性较高: 热稳定性高, 不易起火爆炸。</li>
-            <li>宽温域性能优异: -40°C 能保持 70% 以上的容量, 适合高寒地区。</li>
-        </ul>
-        <h4>劣势</h4>
-        <ul>
-            <li>能量密度低: 质量——Na 120-160 Wh/kg 低于 Lfp 160-200 Wh/kg, 远低于三元锂电池; 体积——钠离子半径大, 空隙大</li>
-            <li>寿命较短: 对正极造成更大的体积膨胀和应力, 易粉化坍塌。</li>
-        </ul>
-        <div class="image-container"><img src="./10.png" alt="钠离子电池示意图"></div>
+        <h4>纵观历史：从补充到替代的能源革命</h4>
+        <p>电动汽车的发展并非一蹴而就，它经历了一个世纪的沉浮。从早期被燃油车的光芒所掩盖，到混合动力作为过渡方案出现，电动车长期以来扮演着“补充能源”的角色。然而，随着全球对气候变化的日益关切和电池技术的革命性进步，我们正见证一场历史性的转变。电动汽车凭借其不断增长的续航里程、日益完善的充电网络和卓越的驾驶体验，已经实现了从能源补充方案向主流替代能源的重大跨越，正式开启了交通领域全面替代燃油车的宏伟序幕。</p>
         
-        <h3>三种未来电池技术——氢燃料电池</h3>
-        <h4>优势</h4>
-        <ul>
-            <li>高能量密度与长续航: 质量能量密度为汽油三 3 倍, 锂电池 100 倍以上; 轻松实现 800+ 公里续航。</li>
-            <li>真正的零排放: 反应物只有水。</li>
-            <li>良好的环境适应性。</li>
-        </ul>
-        <h4>劣势</h4>
-        <ul>
-            <li>成本高昂: 制氢——电解水; 储运——高压压缩、液化; 加注——加氢站投资成本高达千万, 涉及高压高危设备。</li>
-            <li>全周期能效较低: 电 → 电解水 → 压缩/液化 → 运输 → 燃料电池发电, 大量能量以热能形式散失, 效率仅为 30-40%。</li>
-        </ul>
-        <div class="image-container"><img src="./11.png" alt="氢燃料电池示意图"></div>
+        <h4>聚焦当下：技术突破与产业共荣</h4>
+        <p>当前，我们正处于交通电动化浪潮的中心。以磷酸铁锂、三元锂为代表的储能技术正以前所未有的速度迭代突破，而钠离子、半固态等下一代电池技术也已崭露头角，共同推动着电动汽车产业的蓬勃发展。这一核心产业的崛起，不仅重塑了汽车制造业的格局，更催生了一个庞大而充满活力的生态系统。从上游的矿产资源、中游的电池制造与智能产线，到下游的充电设施、电网管理和后市场服务，一条完整的、高附加值的产业链已经形成，带动了全球经济的绿色转型与繁荣。</p>
+        
+        <h4>展望未来：智慧能源网络的核心节点</h4>
+        <p>展望未来，电动汽车的使命将远超交通工具本身。它不再是孤立的个体，而是构建未来智慧城市和清洁能源体系的关键一环。通过V2G（Vehicle-to-Grid）技术，每一辆电动汽车都将成为一个移动的分布式储能单元，能够在用电高峰时向电网输送电力，在低谷时储存可再生能源，从而极大地提升电网的灵活性和稳定性。在智慧城市的蓝图中，联网的电动汽车将与智能交通系统、智能家居和可再生能源网络深度融合，共同实现能源的优化配置和效率的最大化，为构建一个可持续、高效、零碳的未来社会贡献核心力量。</p>
+        <!-- ===== END: 新增的总结部分 ===== -->
+
     </div>
+
+    <script>
+        const labels = [
+            '能量密度', '安全性', '循环寿命', '成本效益', // Inverted Cost
+            '快充速度', '低温性能', '原材料可持续性', '技术成熟度'
+        ];
+
+        const originalDatasets = [
+            {
+                label: '三元锂电池',
+                data: [8, 4, 6, 4, 7, 5, 3, 9],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+            },
+            {
+                label: '磷酸铁锂电池',
+                data: [6, 8, 8, 8, 7, 4, 8, 9],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+            },
+            {
+                label: '固态电池',
+                data: [10, 10, 9, 1, 9, 8, 5, 5],
+                borderColor: 'rgba(255, 206, 86, 1)',
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 2,
+            },
+            {
+                label: '钠离子电池',
+                data: [5, 7, 7, 9, 9, 9, 10, 7],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+            },
+            {
+                label: '氢燃料电池',
+                data: [9, 8, 7, 2, 10, 7, 6, 8],
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                pointBackgroundColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 2,
+            }
+        ];
+        
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [...originalDatasets]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                label += context.raw;
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                        ticks: { stepSize: 2 },
+                        pointLabels: { font: { size: 12, weight: 'bold' } }
+                    }
+                },
+                elements: {
+                    line: { borderWidth: 3 }
+                }
+            },
+        });
+
+        function updateChart() {
+            const activeDatasets = originalDatasets.filter((_, i) => {
+                return document.getElementById('cb-' + i).checked;
+            });
+            radarChart.data.datasets = activeDatasets;
+            radarChart.update();
+        }
+    </script>
 </body>
 </html>
