@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能源史诗</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-size: 24px;
+        }
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        /* 目录 */
+        #nav {
+            block-size: 2rem;
+            display: flex;
+            user-select: none;
+            -webkit-user-select: none; /* I hate having to write this. */
+        }
+        #nav > * {
+            flex-grow: 1;
+            text-align: center;
+            padding-block: calc(1rem - 0.5lh);
+            background-color: #333; /* We'll polish the styling *later*. */
+            cursor: pointer;
+        }
+        #nav > :hover {
+            background-color: #444;
+        }
+        #nav > label {
+            flex-grow: 0;
+            inline-size: 2rem;
+        }
+        #navstyle {
+            display: none;
+        }
+        body:has(#navstyle:checked) {
+            flex-direction: row;
+        }
+        #nav:has(#navstyle:checked) {
+            writing-mode: vertical-rl;
+        }
+
+        /* 主窗口 */
+        #main {
+            position: relative;
+            inset: 0;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        iframe {
+            border: none;
+            display: block;
+            width: 100%;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <input id="navstyle" name="navstyle" type="checkbox"/>
+        <label for="navstyle">⇉</label>
+        <div>序言</div>
+        <div>流动的能源</div>
+        <div>计算的能源</div>
+        <div>自然的能源</div>
+        <div>终极的能源</div>
+        <div>总结</div>
+    </div>
+    <div id="main">
+        <iframe src="preface.html" scrolling="no"></iframe>
+        <iframe src="/part1/website_head.html" scrolling="no"></iframe>
+        <iframe src="/part1/flowchart.html" scrolling="no"></iframe>
+        <iframe src="/part1/website.html" scrolling="no"></iframe>
+        <iframe src="/part1/visualization.html" scrolling="no"></iframe>
+        <iframe src="/part2/index.html" scrolling="no"></iframe>
+        <iframe src="/part3/doc.html" scrolling="no"></iframe>
+        <iframe src="/part4/index.html" scrolling="no"></iframe>
+        <iframe src="summary.html" scrolling = "no"></iframe>
+    </div>
+
+    <script>
+        const /** @type {HTMLIFrameElement[]} */ iframes = Array.from(document.getElementsByTagName("iframe"));
+        const /** @type {HTMLDivElement} */ main = document.getElementById("main");
+        var scrollY = 0;
+
+        // 获取 iframe 文档高度
+        function docHeight(/** @type {HTMLIFrameElement} */ d) {
+            return d.contentWindow.document.documentElement.offsetHeight;
+        }
+        // 将 iframe 高度设为 min(文档高度, #main 高度)
+        function setHeight(/** @type {HTMLIFrameElement} */ d, height = Math.min(main.clientHeight, docHeight(d))) {
+            d.style.height = `${height}px`;
+        }
+
+        // 你的 debug 日常让我坚定了另辟蹊径的想法。
+        // 现在我监听鼠标滚轮，然后手动挪动 iframe 位置并手动滚动 iframe 内容。
+
+        // 挪动 & 滚动指定 iframe
+        function scrolled(/** @type {HTMLIFrameElement} */ d, top, scrollY) {
+            d.style.top = `${top}px`;
+            d.contentWindow.scrollTo(0, scrollY);
+        }
+        // 挪动 & 滚动*所有* iframe
+        function render(/** @type {number} */ top = -scrollY) {
+            const mainHeight = main.clientHeight;
+            for (const d of iframes) {
+                const height = Math.floor(docHeight(d)) - 1;
+                if (top + height <= 0 || top >= mainHeight)
+                    d.style.display = "none";
+                else {
+                    d.style.display = "block";
+                    setHeight(d);
+                    if (top >= 0 || height <= mainHeight)
+                        scrolled(d, top, 0);
+                    else if (top <= mainHeight - height)
+                        scrolled(d, top + height - mainHeight, height);
+                    else
+                        scrolled(d, 0, -top);
+                }
+                top += height;
+            }
+        }
+
+        // 监听鼠标滚轮，用 scrollY 记录当前位置
+        function handleMouseWhell(/** @type {WheelEvent} */ e) {
+            scrollY += e.deltaY;
+            if (scrollY <= 0)
+                scrollY = 0;
+            render();
+        }
+
+        function iframeInit(/** @type {HTMLIFrameElement} */ d) {
+            setHeight(d);
+            d.contentWindow.addEventListener("wheel", (e) => {
+                e.stopPropagation();
+                handleMouseWhell(e);
+            });
+            render();
+        }
+
+        iframes.forEach((d) => {
+            if (d.contentWindow.document.readyState === "interactive") 
+                iframeInit(d);
+            else
+                d.contentWindow.addEventListener("load", () => iframeInit(d));
+        });
+        addEventListener("resize", () => render());
+        addEventListener("wheel", handleMouseWhell);
+        document.getElementById("navstyle").addEventListener("change", () => render());
+    </script>
+</body>
+</html>
