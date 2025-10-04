@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小米汽车SU7生产流程</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #fff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            /* MODIFIED: 修改为 center 实现垂直居中 */
+            align-items: center; 
+            padding: 40px;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: auto;
+            box-sizing: border-box; /* 确保 padding 不会影响总宽高 */
+        }
+
+        .flowchart-container {
+            position: relative;
+            width: 1400px;
+            height: 1000px;
+            flex-shrink: 0; /* 防止容器在小屏幕下被压缩 */
+        }
+
+        .node {
+            position: absolute;
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px 25px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: #42a5f5;
+        }
+        
+        .node.raw-material {
+            background-color: #fff3e0;
+            border-color: #ffcc80;
+        }
+
+        .node.final-product {
+            background-color: #e8f5e9;
+            border-color: #a5d6a7;
+        }
+
+        .details-card {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 320px;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .details-card.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .details-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .details-card p {
+            margin: 0;
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        .details-card .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+
+        /* Positioning nodes */
+        #raw-material { top: 320px; left: 20px; }
+        #stamping { top: 120px; left: 280px; }
+        #die-casting { top: 520px; left: 280px; }
+        #body-shop { top: 320px; left: 540px; }
+        #paint-shop { top: 320px; left: 780px; }
+        #battery-shop { top: 320px; left: 1020px; }
+        #final-assembly { top: 520px; left: 1020px; }
+        #finished-car { top: 520px; left: 560px; }
+        
+        /* Positioning details cards */
+        #raw-material-details { top: 400px; left: 20px; }
+        #stamping-details { top: 200px; left: 180px; }
+        #die-casting-details { top: 360px; left: 180px; }
+        #body-shop-details { top: 160px; left: 440px; }
+        #paint-shop-details { top: 160px; left: 680px; }
+        #battery-shop-details { top: 160px; left: 920px; }
+        #final-assembly-details { top: 520px; left: 760px; }
+        
+        /* --- OPTIMIZED CONNECTORS AND ARROWS --- */
+        .connector {
+            position: absolute;
+            background-color: #adb5bd;
+            z-index: 1;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            z-index: 1;
+        }
+
+        /* --- Paths 1 to 5 (Unchanged) --- */
+        .line1 { top: 350px; left: 120px; width: 80px; height: 3px; }
+        .line2 { top: 150px; left: 200px; width: 3px; height: 400px; }
+        .line3 { top: 150px; left: 200px; width: 80px; height: 3px; }
+        .arrow1 { top: 146px; left: 275px; border-width: 5px 0 5px 8.7px; border-color: transparent transparent transparent #adb5bd; }
+        .line4 { top: 550px; left: 200px; width: 80px; height: 3px; }
+        .arrow2 { top: 546px; left: 275px; border-width: 5px 0 5px 8.7px; border-color: transparent transparent transparent #adb5bd; }
+        .line5 { top: 150px; left: 400px; width: 100px; height: 3px; }
+        .line6 { top: 150px; left: 500px; width: 3px; height: 400px; }
+        .line7 { top: 550px; left: 400px; width: 103px; height: 3px; }
+        .line8 { top: 350px; left: 500px; width: 40px; height: 3px; }
+        .arrow3 { top: 346px; left: 535px; border-width: 5px 0 5px 8.7px; border-color: transparent transparent transparent #adb5bd; }
+        .line9 { top: 350px; left: 663px; width: 115px; height: 3px; }
+        .arrow4 { top: 346px; left: 775px; border-width: 5px 0 5px 8.7px; border-color: transparent transparent transparent #adb5bd; }
+        .line10 { top: 350px; left: 903px; width: 115px; height: 3px; }
+        .arrow5 { top: 346px; left: 1015px; border-width: 5px 0 5px 8.7px; border-color: transparent transparent transparent #adb5bd; }
+        .line11 { top: 370px; left: 1085px; width: 3px; height: 150px; }
+        .arrow6 { top: 513px; left: 1081px; border-width: 8.7px 5px 0 5px; border-color: #adb5bd transparent transparent transparent; }
+        .line12 { display: none; }
+
+        /* --- MODIFIED Path 6: Assembly to Finished Car --- */
+        .line13 { top: 550px; left: 650px; width: 370px; height: 3px; }
+        .line14 { display: none; }
+        .arrow7 { top: 546px; left: 645px; border-width: 5px 8.7px 5px 0; border-color: transparent #adb5bd transparent transparent; }
+        
+        .main-car-image {
+            position: absolute;
+            width: 600px;
+            top: 680px;
+            left: 350px;
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="flowchart-container">
+
+        <!-- NODES -->
+        <div class="node raw-material" id="raw-material">原材料</div>
+        <div class="node" id="stamping">冲压车间</div>
+        <div class="node" id="die-casting">压铸车间</div>
+        <div class="node" id="body-shop">车身车间</div>
+        <div class="node" id="paint-shop">涂装车间</div>
+        <div class="node" id="battery-shop">电池车间</div>
+        <div class="node" id="final-assembly">总装车间</div>
+        <div class="node final-product" id="finished-car">成品</div>
+
+        <!-- DETAILS CARDS -->
+        <div class="details-card" id="raw-material-details">
+            <p class="title">小米泰坦合金</p>
+            <p>采用小米自研的泰坦合金材料，为车身提供高强度和轻量化的基础。</p>
+        </div>
+        
+        <div class="details-card" id="stamping-details">
+            <img src="./f_1.png" alt="冲压车间">
+            <p class="title">6900吨五序冲压线</p>
+            <p>最快每 4 秒下线一个工件，高效完成车身覆盖件的精密成型。</p>
+        </div>
+
+        <div class="details-card" id="die-casting-details">
+            <img src="./f_2.png" alt="压铸车间">
+             <p class="title">9100吨一体化压铸</p>
+            <p>采用超级大压铸技术，每 2 分钟完成一个复杂的后地板压铸件，大幅减少零件数量和重量。</p>
+        </div>
+
+        <div class="details-card" id="body-shop-details">
+            <img src="./f_3.png" alt="车身车间">
+             <p class="title">91%自动化率黑灯生产</p>
+            <p>车身车间拥有超过700个机器人，实现91%的超高自动化率，可进行24小时无人化“黑灯生产”。</p>
+        </div>
+
+        <div class="details-card" id="paint-shop-details">
+            <img src="./f_4.png" alt="涂装车间">
+            <p class="title">3C2B 喷涂工艺</p>
+            <p>采用先进的“3C2B”工艺，配合7轴喷涂机器人，使得漆面更加细腻、平整，色彩饱满。</p>
+        </div>
+
+        <div class="details-card" id="battery-shop-details">
+            <img src="./f_5.png" alt="电池车间">
+            <p class="title">视觉算法赋能</p>
+            <p>通过视觉算法赋能动态定位，实现电池包生产过程中的“边焊边检”、“即涂即检”。</p>
+        </div>
+
+        <div class="details-card" id="final-assembly-details">
+            <img src="./f_6.png" alt="总装车间">
+             <p class="title">自动化装配</p>
+            <p>前后风挡、全景天幕等大型部件均采用机械臂进行自动化装配，精度可达±0.5mm。</p>
+        </div>
+
+        <!-- CONNECTORS -->
+        <div class="connector line1"></div>
+        <div class="connector line2"></div>
+        <div class="connector line3"></div>
+        <div class="arrow arrow1"></div>
+        <div class="connector line4"></div>
+        <div class="arrow arrow2"></div>
+        <div class="connector line5"></div>
+        <div class="connector line6"></div>
+        <div class="connector line7"></div>
+        <div class="connector line8"></div>
+        <div class="arrow arrow3"></div>
+        <div class="connector line9"></div>
+        <div class="arrow arrow4"></div>
+        <div class="connector line10"></div>
+        <div class="arrow arrow5"></div>
+        <div class="connector line11"></div>
+        <div class="connector line12"></div>
+        <div class="arrow arrow6"></div>
+        <div class="connector line13"></div>
+        <div class="connector line14"></div>
+        <div class="arrow arrow7"></div>
+        
+        <img src="./f_7.png" alt="Xiaomi SU7" class="main-car-image" id="su7">
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nodes = document.querySelectorAll('.node');
+
+            nodes.forEach(node => {
+                const detailsCardId = node.id + '-details';
+                const detailsCard = document.getElementById(detailsCardId);
+
+                if (detailsCard) {
+                    node.addEventListener('mouseover', () => {
+                        detailsCard.classList.add('visible');
+                    });
+
+                    node.addEventListener('mouseout', () => {
+                        detailsCard.classList.remove('visible');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

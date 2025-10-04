@@ -1,0 +1,342 @@
+/* 定义全局颜色变量，方便统一管理和修改主题（暗黑模式） */
+:root {
+    --color-text: #e0e0e0;      /* 主要文本颜色 */
+    --color-bg: #121212;        /* 主要背景色 */
+    --color-primary: #03dac6;   /* 主题色1（高亮，如标题） */
+    --color-secondary: #bb86fc; /* 主题色2（次要高亮，如图表） */
+    --color-surface: #1e1e1e;   /* 卡片、容器等表面颜色 */
+    --color-border: #333;       /* 边框颜色 */
+}
+
+/* 基础页面样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.7;
+    overflow-x: hidden; /* 防止水平滚动条出现 */
+}
+
+/* 统一的静态内容区域样式 */
+.main-content-area {
+    padding: 40px 20px;
+    background-color: #0d0d0d;
+}
+.content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+/* 各级标题样式 */
+.content-wrapper h1 {
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.8rem;
+}
+.content-wrapper h2 {
+    color: var(--color-secondary);
+    margin-top: 40px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+    font-size: 1.8rem;
+}
+.content-wrapper h3 {
+    color: var(--color-primary);
+    margin-top: 25px;
+    font-size: 1.3rem;
+}
+.content-wrapper h4 {
+    color: #ddd;
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+/* 列表样式 */
+.content-wrapper ul {
+    list-style-type: disc;
+    padding-left: 25px;
+}
+.content-wrapper ul ul {
+    list-style-type: circle;
+    margin-top: 10px;
+}
+.content-wrapper li {
+    margin-bottom: 12px;
+}
+/* 公式样式 */
+.formula {
+    background-color: #000;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    color: #eee;
+    border: 1px solid var(--color-border);
+    margin: 20px 0;
+    font-size: 1.1rem;
+}
+/* 瓶颈介绍项样式 */
+.bottleneck-intro-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-left: 3px solid #444;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 0 5px 5px 0;
+}
+
+
+/* ===== Scrollytelling 布局 ===== */
+/* 交互式可视化部分的主容器，使用flex布局 */
+.container {
+    display: flex;
+    max-width: 1600px;
+    margin: 40px auto 0 auto;
+    padding: 20px;
+    gap: 40px; /* 左右两栏的间距 */
+}
+
+/* 左侧滚动文本区域，占据3份宽度 */
+.scroll-text { flex: 3; }
+
+/* 右侧固定可视化区域，占据2份宽度 */
+.sticky-viz {
+    flex: 2;
+    height: 85vh; /* 高度为视窗高度的85% */
+    position: sticky; /* 实现粘性定位，使其在滚动时固定 */
+    top: 7.5vh; /* 距离视窗顶部7.5%，使其垂直居中 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 左侧滚动文本卡片的样式 */
+.text-section {
+    padding: 20px;
+    margin-bottom: 40vh; /* 卡片之间的巨大间距是实现滚动效果的关键 */
+    border-radius: 8px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: all 0.4s ease; /* 平滑过渡效果 */
+    opacity: 0.5; /* 非激活状态下半透明 */
+}
+
+/* 最后一个卡片底部的间距小一些 */
+.text-section:last-child { margin-bottom: 20vh; }
+
+/* 当前激活的文本卡片样式 */
+.text-section.is-active {
+    opacity: 1; /* 完全不透明 */
+    border-color: var(--color-primary); /* 边框高亮 */
+    transform: scale(1.02); /* 轻微放大 */
+    background-color: #2a2a2a; /* 背景色加深 */
+}
+
+.text-section h2 { margin-top: 0; color: var(--color-secondary); }
+.text-section h4 {
+    color: var(--color-primary);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--color-primary);
+    padding-left: 10px;
+}
+.text-section .details { font-size: 0.9em; color: #aaa; }
+
+/* 装置图片容器样式 */
+.image-container {
+    width: 100%;
+    height: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+    background-color: #000;
+    border: 1px solid var(--color-border);
+}
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保证图片不变形地填满容器 */
+    display: block;
+}
+
+
+/* ===== 右侧可视化图表样式 ===== */
+/* 图例容器 */
+.legend-container {
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+}
+
+/* 单个图例项 */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 15px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.legend-item:hover { border-color: var(--color-secondary); }
+.legend-item.active { /* 点击激活后的图例项样式 */
+    background-color: var(--color-secondary);
+    color: #000;
+    font-weight: bold;
+    border-color: var(--color-secondary);
+}
+.legend-color { /* 图例中的颜色小圆点 */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 图表主容器 */
+.viz-container {
+    width: 100%;
+    flex-grow: 1; /* 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 单个指标（如温度、Q值）的图表组 */
+.metric-group {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 指标信息（标签和数值） */
+.metric-info {
+    flex-shrink: 0;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.metric-info h3 { margin: 0; font-size: 1rem; color: #ccc; font-weight: 400; }
+.metric-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    transition: opacity 0.3s ease;
+    opacity: 0; /* 初始不可见 */
+    height: 1.2em; /* 预留高度防止跳动 */
+}
+.metric-value.visible { opacity: 1; } /* 可见状态 */
+
+/* 条形图的容器 */
+.bars-container {
+    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* 单个条形图 */
+.bar {
+    position: absolute;
+    left: 0;
+    width: 0; /* 初始宽度为0，由JS控制 */
+    opacity: 0.85;
+    transition: width 0.6s ease-out, opacity 0.3s ease; /* 宽度和透明度变化的过渡效果 */
+    cursor: pointer;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-bg); /* 条形之间的细分隔线 */
+}
+.bar:last-of-type { border-bottom: none; }
+
+/* 高亮和暗淡的条形图样式 */
+.bar.highlight { opacity: 1; outline: 2px solid white; z-index: 10; }
+.bar.dimmed { opacity: 0.25; }
+
+
+/* ===== 技术瓶颈追踪器样式 ===== */
+.bottleneck-tracker {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--color-border);
+}
+.bottleneck-tracker h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+    text-align: center;
+}
+.bottleneck-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.4s ease;
+    font-size: 0.9rem;
+}
+.bottleneck-status { /* 状态小圆点 */
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--color-bg);
+    transition: all 0.4s ease;
+}
+/* 状态1: 未激活 */
+.bottleneck-item.status-inactive {
+    opacity: 0.3;
+}
+.bottleneck-item.status-inactive .bottleneck-status {
+    background-color: #444;
+}
+/* 状态2: 新揭示/解锁 */
+.bottleneck-item.status-unlocked {
+    opacity: 1;
+    background-color: rgba(3, 218, 198, 0.1);
+}
+.bottleneck-item.status-unlocked .bottleneck-status {
+    background-color: var(--color-primary);
+}
+/* 状态3: 已解决 */
+.bottleneck-item.status-solved {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+.bottleneck-item.status-solved .bottleneck-status {
+    background-color: var(--color-secondary);
+}
+.bottleneck-item.status-solved .bottleneck-status::before {
+    content: '✓'; /* 显示对勾 */
+}
+
+
+/* ===== 提示框 (Tooltip) 样式 ===== */
+#tooltip {
+    position: absolute;
+    display: none; /* 默认隐藏 */
+    background-color: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: white;
+    pointer-events: none; /* 避免 tooltip 干扰鼠标事件 */
+    z-index: 999;
+    white-space: nowrap; /* 防止内容换行 */
+}

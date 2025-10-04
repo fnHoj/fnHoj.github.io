@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <style>
+            body{
+                overscroll-behavior: none;
+                overflow: hidden;
+            }
+            .ground{
+                position: fixed;
+                left: 0;
+                top: 0;
+                margin: 0;
+                padding: 0;
+                width: 100vw;
+                height: 100vh;
+            }
+            .ground.back{
+                background-color: #1e293b;
+                z-index: -100000000;
+            }
+            .ground.fore{
+                /* background-color: #1e293b3f; */
+                z-index: 100000000;
+                /* pointer-events: none; */
+            }
+            iframe {
+                border: none;
+                display: block;
+            }
+            .left_panel_doc{
+                width: 30%;
+                overflow: hidden;
+            }
+            .graphs{
+                position: fixed;
+                padding: 3%;
+                top: 0;
+                left: 30%;
+                width: 64%;
+                height: calc(100vh - 6vw);
+            }
+            .full_screen_doc{
+                width: 100%;
+                overflow: hidden;
+            }
+            .graphs.relative{
+                position: absolute;
+            }
+            #graph2{
+                padding: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+            }
+            .suppress_wheel{
+                pointer-events: auto !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ground back"></div>
+        <!-- <iframe src="part1/2020text.html" class="left_panel_doc" id="doc1"></iframe>
+        <iframe src="part1/2025text.html" class="left_panel_doc" id="doc2"></iframe> -->
+        <iframe src="part1/website_head.html" class="full_screen_doc" id="doc1" scrolling="no"></iframe>
+        <iframe src="part1/flowchart.html" class="full_screen_doc" id="doc2" scrolling="no"></iframe>
+        <iframe src="part1/website.html" class="full_screen_doc" id="doc3" scrolling="no"></iframe>
+        <iframe src="part1/visualization.html" class="full_screen_doc" id="doc4" scrolling="no"></iframe>
+        <iframe src="part2/index.html" class="full_screen_doc" id="doc5" scrolling="no"></iframe>
+        <iframe src="part4/index.html" class="full_screen_doc" id="doc6" scrolling="no"></iframe>
+        <iframe src="ending.html" class="full_screen_doc" id="doc7" scrolling="no"></iframe>
+        
+        <!-- <iframe src="/part1/main.html" class="graphs" id="graph1"></iframe> -->
+        <!-- <iframe src="graph1.html" class="graphs" id="graph1"></iframe> -->
+        <!-- <iframe src="part2/index.html" class="graphs" id="graph2"></iframe> -->
+
+        <script src="./m.js" type="module"></script>
+        <!-- <div class="ground fore" id="foreground"></div> -->
+    </body>
+</html>
