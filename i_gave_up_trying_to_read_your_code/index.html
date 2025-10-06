@@ -8,6 +8,7 @@
         :root {
             color-scheme: dark;
             font-size: 24px;
+            touch-action: none;
         }
         body {
             margin: 0;
@@ -68,94 +69,174 @@
     <div id="nav">
         <input id="navstyle" name="navstyle" type="checkbox"/>
         <label for="navstyle">⇉</label>
-        <div>序言</div>
-        <div>流动的能源</div>
-        <div>计算的能源</div>
-        <div>自然的能源</div>
-        <div>终极的能源</div>
-        <div>总结</div>
+        <div data-bookmark="preface">序言</div>
+        <div data-bookmark="part1">流动的能源</div>
+        <div data-bookmark="part2">计算的能源</div>
+        <div data-bookmark="part3">自然的能源</div>
+        <div data-bookmark="part4">终极的能源</div>
+        <div data-bookmark="summary">总结</div>
     </div>
     <div id="main">
-        <iframe src="preface.html" scrolling="no"></iframe>
-        <iframe src="/part1/website_head.html" scrolling="no"></iframe>
+        <iframe data-bookmark="preface" src="preface.html" scrolling="no"></iframe>
+        <iframe data-bookmark="part1" src="/part1/website_head.html" scrolling="no"></iframe>
         <iframe src="/part1/flowchart.html" scrolling="no"></iframe>
         <iframe src="/part1/website.html" scrolling="no"></iframe>
         <iframe src="/part1/visualization.html" scrolling="no"></iframe>
-        <iframe src="/part2/index.html" scrolling="no"></iframe>
-        <iframe src="/part3/doc.html" scrolling="no"></iframe>
-        <iframe src="/part4/index.html" scrolling="no"></iframe>
-        <iframe src="summary.html" scrolling = "no"></iframe>
+        <iframe data-bookmark="part2" src="/part2/index.html" scrolling="no"></iframe>
+        <iframe data-bookmark="part3" src="/part3/doc.html" scrolling="no"></iframe>
+        <iframe data-bookmark="part4" src="/part4/index.html" scrolling="no"></iframe>
+        <iframe data-bookmark="summary" src="summary.html" scrolling = "no"></iframe>
     </div>
 
     <script>
-        const /** @type {HTMLIFrameElement[]} */ iframes = Array.from(document.getElementsByTagName("iframe"));
         const /** @type {HTMLDivElement} */ main = document.getElementById("main");
+        var pageHeight = 0;
         var scrollY = 0;
 
-        // 获取 iframe 文档高度
-        function docHeight(/** @type {HTMLIFrameElement} */ d) {
-            return d.contentWindow.document.documentElement.offsetHeight;
-        }
-        // 将 iframe 高度设为 min(文档高度, #main 高度)
-        function setHeight(/** @type {HTMLIFrameElement} */ d, height = Math.min(main.clientHeight, docHeight(d))) {
-            d.style.height = `${height}px`;
-        }
+        // 一个记录 iframe 数据的类
+        class DocIFrame {
+            /** @type {HTMLIFrameElement} */ iframe;
+            /** @type {number} */ docHeight;
+            /** @type {number} */ pos;
+            /** @type {string | null} */ bookmark;
 
-        // 你的 debug 日常让我坚定了另辟蹊径的想法。
-        // 现在我监听鼠标滚轮，然后手动挪动 iframe 位置并手动滚动 iframe 内容。
-
-        // 挪动 & 滚动指定 iframe
-        function scrolled(/** @type {HTMLIFrameElement} */ d, top, scrollY) {
-            d.style.top = `${top}px`;
-            d.contentWindow.scrollTo(0, scrollY);
-        }
-        // 挪动 & 滚动*所有* iframe
-        function render(/** @type {number} */ top = -scrollY) {
-            const mainHeight = main.clientHeight;
-            for (const d of iframes) {
-                const height = Math.floor(docHeight(d)) - 1;
-                if (top + height <= 0 || top >= mainHeight)
-                    d.style.display = "none";
-                else {
-                    d.style.display = "block";
-                    setHeight(d);
-                    if (top >= 0 || height <= mainHeight)
-                        scrolled(d, top, 0);
-                    else if (top <= mainHeight - height)
-                        scrolled(d, top + height - mainHeight, height);
-                    else
-                        scrolled(d, 0, -top);
-                }
-                top += height;
+            constructor(/** @type {HTMLIFrameElement} */ iframe) {
+                this.iframe = iframe;
+                this.docHeight = 0;
+                this.pos = 0;
+                this.bookmark = iframe.getAttribute("data-bookmark");
             }
+            updateDocHeight() {
+                try {
+                    return this.docHeight = this.iframe.contentWindow.document.documentElement.offsetHeight;
+                } catch (e) {}
+                return this.docHeight = 0;
+            }
+            setHeight(height = Math.min(main.clientHeight, this.docHeight)) {
+                this.iframe.style.height = `${height}px`;
+            }
+            scrollTo(/** @type {number} */ top, /** @type {number} */ scrollY) {
+                this.iframe.style.top = `${top}px`;
+                this.iframe.contentWindow.scrollTo(0, scrollY);
+            }
+            onready() {
+                return new Promise((resolve, reject) => {
+                    if (this.iframe.contentWindow.document.readyState === "interactive") 
+                        resolve();
+                    else
+                        this.iframe.contentWindow.addEventListener("load", () => resolve());
+                });
+            }
+            addListener(...args) {
+                this.iframe.contentWindow.addEventListener(...args);
+            }
+        }
+
+        const /** @type {Map<string, DocIFrame>} */ bookmarks = new Map();
+        const /** @type {DocIFrame[]} */ docs = Array.from(document.getElementsByTagName("iframe")).map((iframe) => {
+            const doc = new DocIFrame(iframe);
+            const bookmark = iframe.getAttribute("data-bookmark");
+            if (typeof bookmark === "string")
+                bookmarks.set(bookmark, doc);
+            return doc;
+        });
+
+        function setHeights() {
+            pageHeight = 0;
+            for (const doc of docs) {
+                doc.pos = pageHeight;
+                pageHeight += doc.updateDocHeight();
+                doc.setHeight();
+            }
+            console.log(pageHeight);
+            return pageHeight;
+        }
+
+        function render() {
+            const mainHeight = main.clientHeight;
+            setHeights();
+            clampScrollY();
+            for (const doc of docs) {
+                const top = doc.pos - scrollY;
+                if (top >= 0 || doc.docHeight <= mainHeight)
+                    doc.scrollTo(top, 0);
+                else if (top <= mainHeight - doc.docHeight)
+                    doc.scrollTo(top + doc.docHeight - mainHeight, doc.docHeight);
+                else
+                    doc.scrollTo(0, -top);
+            }
+        }
+
+        const /** @type {Map<number, number>} */ touchY = new Map();
+        
+        // 手动滚动
+        function clampScrollY() {
+            if (scrollY <= 0)
+                scrollY = 0;
+            if (scrollY >= pageHeight - main.clientHeight)
+                scrollY = pageHeight - main.clientHeight;
+        }
+        function scroll(/** @type {number} */ dy) {
+            scrollY += dy;
+            clampScrollY();
+            render();
+        }
+        function goto_bookmark(/** @type {string} */ bookmark) {
+            const doc = bookmarks.get(bookmark);
+            if (typeof doc === "undefined")
+                return;
+            scrollY = doc.pos;
+            clampScrollY();
+            render();
         }
 
         // 监听鼠标滚轮，用 scrollY 记录当前位置
         function handleMouseWhell(/** @type {WheelEvent} */ e) {
-            scrollY += e.deltaY;
-            if (scrollY <= 0)
-                scrollY = 0;
-            render();
+            e.stopPropagation();
+            scroll(e.deltaY);
         }
 
-        function iframeInit(/** @type {HTMLIFrameElement} */ d) {
-            setHeight(d);
-            d.contentWindow.addEventListener("wheel", (e) => {
-                e.stopPropagation();
-                handleMouseWhell(e);
-            });
-            render();
+        // 监听触碰
+        function setTouch(/** @type {Touch} */ touch) {
+            touchY.set(touch.identifier, touch.screenY);
+        }
+        function handleTouchStart(/** @type {TouchEvent} */ e) {
+            e.stopPropagation();
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                setTouch(e.changedTouches[i]);
+            }
+        }
+        function handleTouchMove(/** @type {TouchEvent} */ e) {
+            e.stopPropagation();
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                if (touchY.has(touch.identifier)) {
+                    scroll(touchY.get(touch.identifier) - touch.screenY);
+                }
+                setTouch(touch);
+            }
         }
 
-        iframes.forEach((d) => {
-            if (d.contentWindow.document.readyState === "interactive") 
-                iframeInit(d);
-            else
-                d.contentWindow.addEventListener("load", () => iframeInit(d));
-        });
+
+        docs.forEach((doc) => doc.onready().then(() => {
+            doc.addListener("wheel", handleMouseWhell);
+            doc.addListener("touchstart", handleTouchStart);
+            doc.addListener("touchmove", handleTouchMove);
+            setHeights();
+            render();
+        }));
+
+        document.getElementById("navstyle").addEventListener("change", () => render());
         addEventListener("resize", () => render());
         addEventListener("wheel", handleMouseWhell);
-        document.getElementById("navstyle").addEventListener("change", () => render());
+        addEventListener("touchstart", handleTouchStart);
+        addEventListener("touchmove", handleTouchMove);
+        Array.from(document.getElementById("nav").children).forEach((d) => {
+            const bookmark = d.getAttribute("data-bookmark");
+            if (typeof bookmark === "string") {
+                d.addEventListener("click", () => goto_bookmark(bookmark));
+            }
+        });
     </script>
 </body>
 </html>
