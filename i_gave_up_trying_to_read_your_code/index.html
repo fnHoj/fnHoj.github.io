@@ -106,19 +106,23 @@
                 this.pos = 0;
                 this.bookmark = iframe.getAttribute("data-bookmark");
             }
+            // 读取文件高度
             updateDocHeight() {
                 try {
                     return this.docHeight = this.iframe.contentWindow.document.documentElement.offsetHeight;
                 } catch (e) {}
                 return this.docHeight = 0;
             }
+            // 设置 iframe 高度
             setHeight(height = Math.min(main.clientHeight, this.docHeight)) {
                 this.iframe.style.height = `${height}px`;
             }
+            // 挪动 iframe 位置 & 滚动内容
             scrollTo(/** @type {number} */ top, /** @type {number} */ scrollY) {
                 this.iframe.style.top = `${top}px`;
                 this.iframe.contentWindow.scrollTo(0, scrollY);
             }
+            // 页面加载完成时触发函数
             onready() {
                 return new Promise((resolve, reject) => {
                     if (this.iframe.contentWindow.document.readyState === "interactive") 
@@ -141,6 +145,7 @@
             return doc;
         });
 
+        // 更新所有 doc 的高度和位置
         function setHeights() {
             pageHeight = 0;
             for (const doc of docs) {
@@ -148,7 +153,6 @@
                 pageHeight += doc.updateDocHeight();
                 doc.setHeight();
             }
-            console.log(pageHeight);
             return pageHeight;
         }
 
@@ -190,7 +194,7 @@
             render();
         }
 
-        // 监听鼠标滚轮，用 scrollY 记录当前位置
+        // 监听鼠标滚轮
         function handleMouseWhell(/** @type {WheelEvent} */ e) {
             e.stopPropagation();
             scroll(e.deltaY);
@@ -217,7 +221,7 @@
             }
         }
 
-
+        // 初始化 doc
         docs.forEach((doc) => doc.onready().then(() => {
             doc.addListener("wheel", handleMouseWhell);
             doc.addListener("touchstart", handleTouchStart);
@@ -226,17 +230,19 @@
             render();
         }));
 
-        document.getElementById("navstyle").addEventListener("change", () => render());
-        addEventListener("resize", () => render());
-        addEventListener("wheel", handleMouseWhell);
-        addEventListener("touchstart", handleTouchStart);
-        addEventListener("touchmove", handleTouchMove);
+        // 初始化目录
         Array.from(document.getElementById("nav").children).forEach((d) => {
             const bookmark = d.getAttribute("data-bookmark");
             if (typeof bookmark === "string") {
                 d.addEventListener("click", () => goto_bookmark(bookmark));
             }
         });
+
+        document.getElementById("navstyle").addEventListener("change", () => render());
+        addEventListener("resize", () => render());
+        addEventListener("wheel", handleMouseWhell);
+        addEventListener("touchstart", handleTouchStart);
+        addEventListener("touchmove", handleTouchMove);
     </script>
 </body>
 </html>
