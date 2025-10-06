@@ -196,7 +196,6 @@
 
         // 监听鼠标滚轮
         function handleMouseWhell(/** @type {WheelEvent} */ e) {
-            e.stopPropagation();
             scroll(e.deltaY);
         }
 
@@ -205,13 +204,11 @@
             touchY.set(touch.identifier, touch.screenY);
         }
         function handleTouchStart(/** @type {TouchEvent} */ e) {
-            e.stopPropagation();
             for (let i = 0; i < e.changedTouches.length; i++) {
                 setTouch(e.changedTouches[i]);
             }
         }
         function handleTouchMove(/** @type {TouchEvent} */ e) {
-            e.stopPropagation();
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
                 if (touchY.has(touch.identifier)) {
