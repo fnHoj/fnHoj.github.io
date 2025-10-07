@@ -39,7 +39,7 @@
             margin-block: 4rem;
         }
         strong {
-            color: #bcf;
+            color: #cdf;
         }
         strong strong {
             font-size: 200%;
@@ -73,6 +73,28 @@
         img {
             width: 100%;
         }
+        .dot {
+            width: 1em;
+            height: 1em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            vertical-align: text-bottom;
+        }
+        .dot > span {
+            background-color: currentColor;
+            width: var(--size);
+            height: var(--size);
+        }
+        table {
+            text-align: center;
+            width: 100%;
+        }
+        th, td {
+            padding-block: 0.25em;
+            padding-inline: 1.5em;
+        }
     </style>
 </head>
 <body>
@@ -81,47 +103,66 @@
         <h2>风能</h2>
         <p>目前，风能是新能源的佼佼者，具有<strong>无污染</strong>、<strong>零碳排</strong>、<strong>可持续</strong>等优势。</p>
         <p>然而，风能最大挑战在于受天气条件影响大，有明显<strong>波动性</strong>、<strong>间歇性</strong>。</p>
-        <p>因此，对风能的<strong><strong>量化建模</strong></strong>和<strong><strong>精准评估</strong></strong>是可再生能源可靠利用的基础，对可持续能源方案至关重要。</p>
+        <p>因此，对风能的<strong><strong>量化建模</strong></strong>和<strong><strong>精准评估</strong></strong>是可再生能源可靠利用的基础，是未来可持续能源愿景的重要一环。</p>
         <h2>风能评估</h2>
         <div class="dynamic">
             <iframe id="chartiframe" class="afloat" src="blocks/"></iframe>
             <div class="content">
                 <div id="prog0">
                     <p>我们将分析过往 20 年风速风向数据。</p>
-                    <p>图中蓝点（<span><span></span></span>）表示每小时风速数据，红点（<span><span></span></span>）表示每月极端风速。两组数据点各自下落，在底部形成风速分布直方图。</p>
+                    <p><span class="dot" style="color: #04c; --size: 4px;"><span></span></span> 每小时平均风速<br/><span class="dot" style="color: #b00; --size: 6px;"><span></span></span> 每月极端风速</p>
                 </div>
                 <div>
-                    <p><strong style="color: #8cf;">风速分布直方图</strong>体现每小时平均风速落在某区间的频率；<strong style="color: #fcc;">极端风速直方图</strong>则是每月极端风速的发生频率统计。</p>
+                    <p><strong style="color: #8cf;">风速分布直方图</strong>：洞察全年风速规律，是估算发电潜力的量化基础。</p>
+                    <p><strong style="color: #fcc;">极端风速直方图</strong>：追踪各月极端风速，为风机抗风安全设计提供关键依据。</p>
                 </div>
                 <div>
-                    <p>计算出年平均风速 7.6 m/s，意味着玉门的风能相当充沛。</p>
-                    <p>结合功率曲线可估算出单台风机年发电量 1700 万度。这足以供上万家庭日常用电。</p>
+                    <p>计算得年均风速 <strong>7.6 m/s</strong>，属于风能资源较丰富级别，非常适合风力发电。</p>
+                    <p>结合风机功率特性，计算得出单台风机每年可产出清洁电力约 <strong>1500 万度</strong>，足以满足一万户家庭每年用电需求。</p>
                 </div>
                 <div id="prog1">
-                    <p>为了估计风机结构稳定性，我们需要计算<b>五十年一遇极端风速</b>。</p>
-                    <p>为此，我们将对月极端风速分布进行 Gumbel 拟合。</p>
+                    <p><strong>50 年一遇极端风速</strong>是评估风机抗风设计的关键指标。它的建模计算，对保证风机达到预期寿命至关重要。</p>
+                    <p>我们将使用 <strong>Gumbel 分布</strong>这一统计方法拟合过往<strong style="color: #fcc;">极端风速数据</strong>，进而推断未来数十年极端天气情况。</p>
                 </div>
                 <div>
-                    <p>Gumbel 分布由 μ 和 β 两个参数描述，分别表示分布的均值和分散程度。</p>
-                    <p>求解出两参数的值后，可按照公式（需要具体讲嘛？？）计算出 50 年一遇极端风速 32 m/s。</p>
-                    <p>这已经弱于风机承受水平的最低标准。</p>
+                    <p>求解出分布的具体形态后，便可计算出 50 年一遇极端风速为 <strong>32 m/s</strong>。</p>
+                    <p>这已经低于 IEC 为风机设定的 III 类最低安全标准。这意味着，在玉门运行的风机，设计保障已充分安全。</p>
                 </div>
                 <span style="display: block; block-size: calc(1.05 * var(--vis-height));"></span>
             </div>
         </div>
         <div class="content">
             <div>
-                <p>此外，从风向玫瑰图可看出：受地形影响，玉门风电站盛行东西风向。这对风机建设是有利条件：</p>
+                <p>此外，玉门风电站坐落于东西走向的峡谷中，“峡谷效应”使东西风更强劲集中。主要优势：</p>
                 <img src="rose.svg"/>
                 <ul>
-                    <li>风向稳定，更易预测；</li>
-                    <li>风机无需频繁转向，可减少磨损，严长寿命。</li>
+                    <li>风力可预测，发电量稳定</li>
+                    <li>风机不必频繁转向，减少机械磨损，延长使用寿命</li>
+                    <li>机组错开排列，减少相互扰流，提升整体效率</li>
                 </ul>
             </div>
         </div>
+        <h2>产业集群</h2>
+        <p>玉门清洁能源富足，为当地能源密集型产业发展奠定了良好基础。</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>绿氢</th>
+                    <th>储能</th>
+                    <th>化工</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>利用富足风电进行电解水制氢，打通产-储-运全套产业链</td>
+                    <td>为缓解风能与光伏的波动性，采用抽水蓄电等方法调峰济谷</td>
+                    <td>发挥能源优势，设计节水工艺，发展低碳化工</td>
+                </tr>
+            </tbody>
+        </table>
         <h2>总结</h2>
         <p>风电目前是可再生能源的主力军。对风能条件的精准评估，是实现未来可持续能源愿景的技术基础。</p>
-        <p>玉门以优越的自然条件，实现了从石油城市到新能源综合发展的转变，为西北乃至全国未来绿色转型立了榜样。</p>
+        <p>玉门以优越的自然条件，实现了从石油城市到新能源综合发展的转变，为西北乃至全国未来绿色转型设立了榜样。</p>
     </div>
 
     <script>
@@ -135,17 +176,18 @@
             return (x - l) / (r - l);
         }
 
-        function setCenterPos(/** @type {number} */center) {
-            chartiframe.contentWindow.postMessage({prog: calcProg(center - dynamic.offsetTop, prog0.offsetTop, prog1.offsetTop)});
+        function setCenterPos() {
+            const center = document.documentElement.scrollTop + document.documentElement.clientHeight / 2;
+            chartiframe.contentWindow.postMessage({prog: calcProg(center, prog0.offsetTop, prog1.offsetTop)});
         }
 
         addEventListener("message", (e) => {
             if (typeof e.data.centerPos === "number")
                 setCenterPos(e.data.centerPos);
         })
-        addEventListener("resize", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
-        addEventListener("scroll", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
-        addEventListener("wheel", () => setCenterPos(document.documentElement.scrollTop + document.documentElement.clientHeight / 2));
+        addEventListener("resize", () => setCenterPos());
+        addEventListener("scroll", () => setCenterPos());
+        addEventListener("wheel", () => setCenterPos());
     </script>
 </body>
 </html>
