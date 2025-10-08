@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>序言</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            background: #273246;
+            font-size: 40px;
+        }
+        body {
+            margin-block: 1em;
+            margin-inline: 6em;
+        }
+        #header {
+            display: flex;
+            align-items: center;
+        }
+        #title {
+            flex-grow: 1;
+        }
+        img {
+            width: 4em;
+            height: 4em;
+            padding-inline: 0.5em;
+            border-radius: 50%;
+        }
+        h1 {
+            margin: 0;
+            font-size: 200%;
+            line-height: 1em;
+        }
+        h2 {
+            margin: 0;
+            margin-top: 0.25em;
+            font-size: 100%;
+            line-height: 1em;
+            color: #fffa;
+            font-weight: normal;
+        }
+        #altavatar, #avatar1 {
+            display: none;
+        }
+        #altavatar:checked ~ #avatar0 {
+            display: none;
+        }
+        #altavatar:checked ~ #avatar1 {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <label id="avatar" for="altavatar">
+            <input type="checkbox" id="altavatar" name="altavatar"/>
+            <img id="avatar0" src="avatar.png"/>
+            <img id="avatar1" src="avatar1.jpg"/>
+        </label>
+        <div id="title">
+            <h1>能源史诗</h1>
+            <h2>从工业革命的脉搏到零碳未来的心跳</h2>
+        </div>
+    </div>
+    <p>能源是支撑人类文明运转的基础性系统。从蒸汽机开启工业革命，到电力网络构建现代城市，再到数字基础设施依赖持续供电，每一次能源形式的演进都深刻重塑了社会的生产方式与组织形态。当前，风能因其清洁性和可再生性被大规模部署利用，但其固有的间歇性与不稳定性，使得电力系统面临供需失衡的挑战。这一现实促使人类在终端用能、能源管理与未来能源路径等多个维度同步探索。风之组的探究，正是围绕这一背景，回应一个根本问题：能源在人类文明发展历程中扮演着怎样的角色？</p>
+
+</body>
+</html>

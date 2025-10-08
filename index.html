@@ -77,15 +77,19 @@
         <div data-bookmark="summary">总结</div>
     </div>
     <div id="main">
-        <iframe data-bookmark="preface" src="preface.html" scrolling="no"></iframe>
-        <iframe data-bookmark="part1" src="/part1/website_head.html" scrolling="no"></iframe>
+        <iframe src="preface.html" data-bookmark="preface" scrolling="no"></iframe>
+        <iframe src="pre1.html" data-bookmark="part1" scrolling="no"></iframe>
+        <iframe src="/part1/website_head.html" scrolling="no"></iframe>
         <iframe src="/part1/flowchart.html" scrolling="no"></iframe>
         <iframe src="/part1/website.html" scrolling="no"></iframe>
         <iframe src="/part1/visualization.html" scrolling="no"></iframe>
-        <iframe data-bookmark="part2" src="/part2/index.html" scrolling="no"></iframe>
-        <iframe data-bookmark="part3" src="/part3/doc.html" scrolling="no"></iframe>
-        <iframe data-bookmark="part4" src="/part4/index.html" scrolling="no"></iframe>
-        <iframe data-bookmark="summary" src="summary.html" scrolling = "no"></iframe>
+        <iframe src="pre2.html" data-bookmark="part2" scrolling="no"></iframe>
+        <iframe src="/part2/index.html" scrolling="no"></iframe>
+        <iframe src="pre3.html" data-bookmark="part3" scrolling="no"></iframe>
+        <iframe src="/part3/doc.html" scrolling="no"></iframe>
+        <iframe src="pre4.html" data-bookmark="part4" scrolling="no"></iframe>
+        <iframe src="/part4/index.html" scrolling="no"></iframe>
+        <iframe src="summary.html" data-bookmark="summary" scrolling = "no"></iframe>
     </div>
 
     <script>
@@ -125,10 +129,11 @@
             // 页面加载完成时触发函数
             onready() {
                 return new Promise((resolve, reject) => {
-                    if (this.iframe.contentWindow.document.readyState === "interactive") 
+                    const readyState = this.iframe.contentWindow.document.readyState;
+                    if (readyState === "interactive" || readyState === "complete")
                         resolve();
                     else
-                        this.iframe.contentWindow.addEventListener("load", () => resolve());
+                        this.iframe.contentWindow.addEventListener("DOMContentLoaded", () => resolve());
                 });
             }
             addListener(...args) {
@@ -172,6 +177,11 @@
         }
 
         const /** @type {Map<number, number>} */ touchY = new Map();
+        const a = 2;
+        var sy = 0;
+        var ty = 0;
+        var dy = 0;
+        var vy = 0;
         
         // 手动滚动
         function clampScrollY() {
@@ -201,20 +211,40 @@
 
         // 监听触碰
         function setTouch(/** @type {Touch} */ touch) {
+            const prev = touchY.get(touch.identifier);
+            if (typeof prev === "number")
+                sy -= prev;
             touchY.set(touch.identifier, touch.screenY);
+            sy += touch.screenY;
         }
         function handleTouchStart(/** @type {TouchEvent} */ e) {
+            vy = 0;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 setTouch(e.changedTouches[i]);
             }
+            ty = sy / touchY.size;
         }
         function handleTouchMove(/** @type {TouchEvent} */ e) {
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
-                if (touchY.has(touch.identifier)) {
-                    scroll(touchY.get(touch.identifier) - touch.screenY);
-                }
                 setTouch(touch);
+            }
+            const ty1 = sy / touchY.size;
+            scroll(dy = ty - ty1);
+            ty = ty1;
+        }
+        function handleTouchEnd(/** @type {TouchEvent} */ e) {
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                const prev = touchY.get(touch.identifier);
+                if (typeof prev === "number") {
+                    sy -= prev;
+                    touchY.delete(touch.identifier);
+                }
+            }
+            if (!touchY.size) {
+                vy = dy;
+                dy = 0;
             }
         }
 
@@ -223,6 +253,8 @@
             doc.addListener("wheel", handleMouseWhell);
             doc.addListener("touchstart", handleTouchStart);
             doc.addListener("touchmove", handleTouchMove);
+            doc.addListener("touchend", handleTouchEnd);
+            doc.addListener("touchcancel", handleTouchEnd);
             setHeights();
             render();
         }));
@@ -235,11 +267,29 @@
             }
         });
 
+        function frame() {
+            if (!touchY.size) {
+                scroll(vy);
+                vy *= 0.95;
+                // if (vy > a)
+                //     vy -= a;
+                // else if (vy < -a)
+                //     vy += a;
+                // else
+                //     vy = 0;
+            }
+            requestAnimationFrame(frame);
+        }
+
         document.getElementById("navstyle").addEventListener("change", () => render());
         addEventListener("resize", () => render());
         addEventListener("wheel", handleMouseWhell);
         addEventListener("touchstart", handleTouchStart);
         addEventListener("touchmove", handleTouchMove);
+        addEventListener("touchend", handleTouchMove);
+        addEventListener("touchcancel", handleTouchMove);
+
+        frame();
     </script>
 </body>
 </html>

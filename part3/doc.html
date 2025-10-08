@@ -95,6 +95,39 @@
             padding-block: 0.25em;
             padding-inline: 1.5em;
         }
+        @keyframes colorloop {
+            0% {
+                background-color: #f00;
+                color: #0ff;
+            }
+            17% {
+                background-color: #ff0;
+                color: #00f;
+            }
+            33% {
+                background-color: #0f0;
+                color: #f0f;
+            }
+            50% {
+                background-color: #0ff;
+                color: #f00;
+            }
+            67% {
+                background-color: #00f;
+                color: #ff0;
+            }
+            83% {
+                background-color: #f0f;
+                color: #0f0;
+            }
+            100% {
+                background-color: #f00;
+                color: #0ff;
+            }
+        }
+        a {
+            animation: colorloop 4s linear infinite;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +138,7 @@
         <p>然而，风能最大挑战在于受天气条件影响大，有明显<strong>波动性</strong>、<strong>间歇性</strong>。</p>
         <p>因此，对风能的<strong><strong>量化建模</strong></strong>和<strong><strong>精准评估</strong></strong>是可再生能源可靠利用的基础，是未来可持续能源愿景的重要一环。</p>
         <h2>风能评估</h2>
+        <p style="text-align: center;"><a href="envision/" target="_blank">点我点我点我点我😎</a></p>
         <div class="dynamic">
             <iframe id="chartiframe" class="afloat" src="blocks/"></iframe>
             <div class="content">

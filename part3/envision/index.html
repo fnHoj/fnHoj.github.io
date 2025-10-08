@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>宏图</title>
+	<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+	<div id="game" style="height: 100%;">
+		<div id="notes">
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+			<div class="note"></div>
+		</div>
+		<div id="turbine">
+			<div id="paddle"></div>
+		</div>
+		<div id="scores">
+			<p id="date">2005-08-01 00:00</p>
+			<p id="combo">0</p>
+			<p id="total">0 kWh</p>
+			<div id="judgement">
+				<p></p>
+				<p></p>
+				<p></p>
+				<p></p>
+			</div>
+		</div>
+	</div>
+	<div id="overlay">
+		<div id="landscape">
+			<h1>请横屏游玩</h1>
+			<img src="assets/rose.svg" alt="玉门风电站风频玫瑰图"/>
+			<p>玉门风电站盛行东西风向</p>
+		</div>
+	</div>
+	
+	<script type="module">
+		import {game_init, beatmap_init} from "./game.js";
+		game_init();
+		beatmap_init();
+	</script>
+</body>
+</html>

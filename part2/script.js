@@ -565,36 +565,36 @@ function setupPueSlider() {
     });
 
     // 触摸设备支持
-    pueSlider.addEventListener('touchstart', function(e) {
-        e.preventDefault(); // 防止滚动
+    // pueSlider.addEventListener('touchstart', function(e) {
+    //     e.preventDefault(); // 防止滚动
         
-        const handleTouchMove = (e) => {
-            e.preventDefault(); // 防止滚动
-            const value = parseFloat(pueSlider.value);
-            throttledUpdate(value);
-        };
+    //     const handleTouchMove = (e) => {
+    //         e.preventDefault(); // 防止滚动
+    //         const value = parseFloat(pueSlider.value);
+    //         throttledUpdate(value);
+    //     };
         
-        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    //     document.addEventListener('touchmove', handleTouchMove, { passive: false });
         
-        const cleanup = () => {
-            document.removeEventListener('touchmove', handleTouchMove);
-            document.removeEventListener('touchend', cleanup);
-            document.removeEventListener('touchcancel', cleanup);
+    //     const cleanup = () => {
+    //         document.removeEventListener('touchmove', handleTouchMove);
+    //         document.removeEventListener('touchend', cleanup);
+    //         document.removeEventListener('touchcancel', cleanup);
             
-            // 添加最终动画效果
-            gsap.to(pueValue, { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
-            gsap.to('.pie-chart-container', { 
-                scale: 1.05,
-                duration: 0.3,
-                yoyo: true,
-                repeat: 1,
-                ease: "power2.inOut"
-            });
-        };
+    //         // 添加最终动画效果
+    //         gsap.to(pueValue, { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+    //         gsap.to('.pie-chart-container', { 
+    //             scale: 1.05,
+    //             duration: 0.3,
+    //             yoyo: true,
+    //             repeat: 1,
+    //             ease: "power2.inOut"
+    //         });
+    //     };
         
-        document.addEventListener('touchend', cleanup);
-        document.addEventListener('touchcancel', cleanup);
-    });
+    //     document.addEventListener('touchend', cleanup);
+    //     document.addEventListener('touchcancel', cleanup);
+    // });
 
     // 初始化显示 - 确保页面加载时就显示正确的PUE值和家庭能耗对比
     updatePueDisplay(1.46);
