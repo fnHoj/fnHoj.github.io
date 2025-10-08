@@ -188,7 +188,7 @@
                 };
             }
 
-            fetch('https://cdn.jsdelivr.net/npm/echarts/map/json/china.json')
+            fetch('/lib/china.json')
                 .then(response => response.json())
                 .then(chinaJson => {
                     echarts.registerMap('china', chinaJson);
